@@ -17,7 +17,7 @@ public class DeckController : MonoBehaviour
 
     void Update()
     {      
-        if(player.currentDeck > 0 && player.currentDeck!=null){
+        if(player.currentDeck > 0 && player.currentDeck <= images.Length && player.currentDeck!=null){
             myImageComponent.sprite = images[player.currentDeck-1];
         }
     }
