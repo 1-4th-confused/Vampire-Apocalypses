@@ -9,7 +9,7 @@ public class MainMenuButtons : MonoBehaviour
     }
 
     public static void openGame() {
-        Debug.Log("*olive oil's ego takes a hit");
+        Debug.Log("rui ego takes a hit");
         SceneManager.LoadScene("CabinOutside");
     }
 }
