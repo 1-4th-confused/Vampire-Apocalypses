@@ -1,11 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-public class PlayerHand1 : MonoBehaviour
+public class PlayerDeck : MonoBehaviour
 {
-    [SerializeField] [Card]
+    List<GameObject> deck = new List<GameObject>();
+    [SerializeField] List<GameObject> possibleCards = new List<GameObject>();
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame

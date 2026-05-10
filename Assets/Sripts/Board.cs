@@ -50,7 +50,8 @@ public class Board : MonoBehaviour
                 
                 // Assign the new data to the existing slot
                 cardRows[i].columns[j] = new Transformish(newPos, Vector3.zero);
-                Instantiate(place, cardRows[i].columns[j].position, Quaternion.identity);
+                GameObject currentObject = Instantiate(place, cardRows[i].columns[j].position, Quaternion.identity);
+                currentObject.layer = LayerMask.NameToLayer("units");
             }
         }
     }

@@ -18,12 +18,8 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private string[] currentCards;
 
     private string[] previousCards = new string[5];
-
-    [SerializeField] public PlayerScript player;
-    private Image myImageComponent;
     void Start()
     {
-        myImageComponent = GetComponent<Image>();
 
         previousCards = new string[currentCards.Length];
         Array.Copy(currentCards, previousCards, currentCards.Length);
@@ -33,9 +29,6 @@ public class PlayerHand : MonoBehaviour
     
     void Update()
     {      
-        if(player.currentDeck > 0 && player.currentDeck <= deckIndicators.Length) {
-            myImageComponent.sprite = deckIndicators[player.currentDeck-1];
-        }
 
         bool hasChanged = false;
         for (int i = 0; i < currentCards.Length; i++) {
@@ -51,7 +44,7 @@ public class PlayerHand : MonoBehaviour
         }
     }
     public void draw(){
-        
+
     }
 
     public void place(){
