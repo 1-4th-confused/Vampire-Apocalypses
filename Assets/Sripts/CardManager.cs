@@ -19,7 +19,7 @@ public class CardManager : MonoBehaviour
 
     public static void ReadJSON()
     {
-        string[] cardJsons = Directory.GetFiles(@"Assets\Resources", "*.json");
+        string[] cardJsons = Directory.GetFiles(@"Assets/Resources", "*.json");
 
         foreach(string file in cardJsons)
         {
