@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerHand1 : MonoBehaviour
 {
-    [SerializeField] [Card]
     void Start()
     {
         

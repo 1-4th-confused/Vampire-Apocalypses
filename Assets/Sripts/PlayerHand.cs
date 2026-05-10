@@ -20,6 +20,7 @@ public class PlayerHand : MonoBehaviour
     private string[] previousCards = new string[5];
 
     [SerializeField] public PlayerScript player;
+    public GameObject cardPrefab;
     private Image myImageComponent;
     void Start()
     {
@@ -28,6 +29,8 @@ public class PlayerHand : MonoBehaviour
         previousCards = new string[currentCards.Length];
         Array.Copy(currentCards, previousCards, currentCards.Length);
         
+        CardManager.ReadJSON();
+
         RefreshHand();
     }
     
@@ -50,13 +53,6 @@ public class PlayerHand : MonoBehaviour
             Array.Copy(currentCards, previousCards, currentCards.Length);
         }
     }
-    public void draw(){
-        
-    }
-
-    public void place(){
-
-    }
     public void RefreshHand()
     {
         foreach (Transform child in transform) {
@@ -67,11 +63,18 @@ public class PlayerHand : MonoBehaviour
 
         for (int i = 0; i < currentCards.Length; i++) {
             if (!string.IsNullOrEmpty(currentCards[i])) {
-                GameObject prefab = cardImages.FirstOrDefault(obj => obj.name == currentCards[i]);
-                if (prefab != null) {
-                    GameObject newCard = Instantiate(prefab, cardTransforms[i].position, cardTransforms[i].rotation);
+                // GameObject cardPrefab = cardImages.FirstOrDefault(obj => obj.name == currentCards[i]);
+                if (cardPrefab != null) {
+                    GameObject newCard = Instantiate(cardPrefab, cardTransforms[i].position, cardTransforms[i].rotation);
                     newCard.transform.SetParent(this.transform, true);
-                    newCard.name = prefab.name;
+                    CardData tempCard = null;
+                    for(int j = 0;j<CardManager.cardTypes.Count;j++)
+                        if(((CardData) (CardManager.cardTypes[j])).name == currentCards[i])
+                            tempCard = (CardData)(CardManager.cardTypes[j]);
+                    if(tempCard!=null)
+                        newCard.GetComponent<CardScript>().cardType = tempCard;
+                    else
+                        newCard.GetComponent<CardScript>().cardType = (CardData)(CardManager.cardTypes[0]);
                 }
             }
         }

@@ -9,15 +9,15 @@ public class CardData
 {
     public double damage;
     public double defense;
-    public string imageName;
+    public string name;
+    public Sprite image;
 }
 
 public class CardManager : MonoBehaviour 
 {
-    public ArrayList cardTypes = new ArrayList();
-    public ArrayList cardImages = new ArrayList();
+    public static ArrayList cardTypes = new ArrayList();
 
-    void Start()
+    public static void ReadJSON()
     {
         string[] cardJsons = Directory.GetFiles(@"Assets\Resources", "*.json");
 
@@ -27,8 +27,10 @@ public class CardManager : MonoBehaviour
             name = file.Substring(file.IndexOf(@"\")+1);
             name = name.Substring(name.IndexOf(@"\")+1);
             name = name.Substring(0,name.IndexOf(@"."));
-            cardTypes.Add(JsonUtility.FromJson<CardData>(Resources.Load<TextAsset>(name).ToString()));
-            cardImages.Add(Resources.Load<Sprite>(name+"Image").ToString());
+            cardTypes.Add(
+                JsonUtility.FromJson<CardData>(Resources.Load<TextAsset>(name).ToString())
+            );
+            ((CardData) (cardTypes[cardTypes.Count-1])).image = Resources.Load<Sprite>(name+"Image");
         }
     }
 }
