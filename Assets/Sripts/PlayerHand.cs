@@ -27,7 +27,7 @@ public class PlayerHand : MonoBehaviour
         previousCards = new string[currentCards.Length];
         Array.Copy(currentCards, previousCards, currentCards.Length);
         
-        CardManager.ReadJSON();
+        CardManager.ReadCardJSON();
 
         RefreshHand();
     }

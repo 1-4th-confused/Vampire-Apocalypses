@@ -1,5 +1,6 @@
 {
     "damage": 45.0,
     "defense": 60.0,
-    "name": "shrimp"
+    "name": "shrimp",
+    "type": "card"
 }

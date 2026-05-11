@@ -1126,11 +1126,13 @@ MonoBehaviour:
   - {fileID: 3344392768400419208, guid: 8e812f2e186584112b74e580356f4605, type: 3}
   - {fileID: 2517035713136023135, guid: 277817858c90e416fbb7318f9fd43274, type: 3}
   currentCards:
-  - Shrimp
+  - shrimp
   - Vines
   - defend
   - slam
   - BloodBolt
+  player: {fileID: 0}
+  cardPrefab: {fileID: 2517035713136023135, guid: 93b4254251c89f745b60bc3326e07fdb, type: 3}
 --- !u!114 &706418665
 MonoBehaviour:
   m_ObjectHideFlags: 0

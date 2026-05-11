@@ -1,5 +1,6 @@
 {
     "damage": 0.0,
     "defense": 5.0,
-    "name": "defend"
+    "name": "defend",
+    "type": "card"
 }
