@@ -1,17 +1,22 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CardScript : MonoBehaviour
+public class CardScript : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     public CardData cardType;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         this.gameObject.GetComponent<UnityEngine.UI.Image>().sprite = cardType.image;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnSelect(BaseEventData eventData)
     {
+        transform.position += Vector3.up * 50;
         
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        transform.position += Vector3.down * 50;
     }
 }
