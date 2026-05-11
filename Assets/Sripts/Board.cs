@@ -7,31 +7,42 @@ public class Board : MonoBehaviour
     public List<GameObject> units = new List<GameObject>();
     public List<GameObject> vampireUnits = new List<GameObject>();
     public GameObject unitPrefab;
-    void Start()
-    {
-        CardManager.ReadUnitsJSON();
-        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, this.gameObject.transform));
-        units[0].GetComponent<UnitBehavior>().unitdata = ((CardData) CardManager.unitTypes[0]);
-    [SerializeField] private List<Row> cardRows = new List<Row>();
+    public Transform commonParent;
+    public Transform unitsParrent;
+
     [SerializeField] private Transform bottomLeftTransform;
     [SerializeField] private GameObject place;
 
     private GameObject[,] spawnedPieces; 
-
+    public (int x, int y) selectedUnitPostion = (-1,-1);
     void Start()
+    {
+        BoardButtonsScript.boardScript = this;
+        
+        CardManager.ReadUnitsJSON();
+        //temporary
+        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        units[0].GetComponent<UnitBehavior>().unitdata = ((CardData) CardManager.unitTypes[0]);
+        units[0].GetComponent<UnitBehavior>().position = (3,3);
+        units[1].GetComponent<UnitBehavior>().unitdata = ((CardData) CardManager.unitTypes[0]);
+        units[1].GetComponent<UnitBehavior>().position = (1,1);
+
+        CreateTiles();
+
+        UpdatePeiceInteractability();
+    }
+
+    void CreateTiles()
     {
         if (bottomLeftTransform == null) return;
 
-        int rows = 7;
-        int cols = 5;
-        spawnedPieces = new GameObject[rows, cols];
-        InitializeGrid(rows, cols);
+        int cols = 7;
+        int rows = 5;
+        spawnedPieces = new GameObject[cols, rows];
 
-        // Get the Board's parent (The Canvas)
-        Transform commonParent = transform.parent;
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
                 
                 float x = bottomLeftTransform.position.x + ((i - 3) * 0.32f);
                 float y = 0.0f;//bottomLeftTransform.position.y + 0.5f;
@@ -42,6 +53,8 @@ public class Board : MonoBehaviour
                 
                 // Instantiate as a sibling (sharing the same parent as Board)
                 GameObject currentObject = Instantiate(place, newPos, Quaternion.Euler(newRot), commonParent);
+
+                currentObject.GetComponent<BoardButtonsScript>().position = (i,j);
                 
                 currentObject.layer = LayerMask.NameToLayer("units");
                 currentObject.name = $"Piece_{i}_{j}";
@@ -52,20 +65,17 @@ public class Board : MonoBehaviour
         SetPieceInteractable(2,3,false);
     }
 
-    void InitializeGrid(int rows, int cols)
-    {
-        cardRows.Clear();
-        for (int i = 0; i < rows; i++)
-        {
-            Row newRow = new Row();
-            for (int j = 0; j < cols; j++)
-            {
-                newRow.columns.Add(new Transformish());
+    public void UpdatePeiceInteractability() {
+        for(int i = 0; i < spawnedPieces.GetLength(0);i++) { //7
+            for(int j = 0; j < spawnedPieces.GetLength(1);j++) { //5
+                SetPieceInteractable(i, j, false);
             }
-            cardRows.Add(newRow);
+        }
+
+        for (int i = 0; i < units.Count; i++) {
+            SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position.x, units[i].GetComponent<UnitBehavior>().position.y, true);
         }
     }
-
     public void SetPieceInteractable(int x, int y, bool state){
         GameObject piece = spawnedPieces[x, y];
         if (piece != null)
@@ -73,5 +83,19 @@ public class Board : MonoBehaviour
             Button btn = piece.GetComponent<Button>();
             if (btn != null) btn.interactable = state;
         }
+    }
+
+    public void ClickTile((int x,int y) pos)
+    {
+        if (selectedUnitPostion == pos){
+            spawnedPieces[pos.x,pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
+            selectedUnitPostion = (-1,-1);
+        } else if(selectedUnitPostion == (-1,-1)) {
+            spawnedPieces[pos.x,pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
+            selectedUnitPostion = pos;
+            spawnedPieces[pos.x,pos.y].GetComponent<BoardButtonsScript>().setSelected(true);
+        }
+        
+        
     }
 }
