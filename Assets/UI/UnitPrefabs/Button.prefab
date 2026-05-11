@@ -99,7 +99,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 0.39215687}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.7610062, g: 0.72642434, b: 0, a: 1}
     m_SelectedColor: {r: 0.96859026, g: 1, b: 0, a: 1}
@@ -146,7 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aef1ec062c1a37d44be6b8013682d1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardButtonsScript
-  boardScript: {fileID: 0}
   selection: {fileID: 745584926189537350}
 --- !u!1 &6618582619605012156
 GameObject:

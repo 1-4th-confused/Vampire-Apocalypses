@@ -14,18 +14,18 @@ public class UnitBehavior : MonoBehaviour
 
     }
 
-    void updatePosition(int x,int y)
+    public void updatePosition((int x,int y) pos)
     {
-        position = (x,y);
+        position = pos;
         this.transform.position = new Vector3(0.32f * (position.x-3), 0.24f, 0.32f * (position.y-2));
     }
 
-    void updatePosition()
+    public void updatePosition()
     {
         this.transform.position = new Vector3(0.32f * (position.x-3), 0.24f, 0.32f * (position.y-2));
     }
 
-    void movePosition(int x,int y)
+    public void movePosition(int x,int y)
     {
         position = (position.x + x,position.y + y);
         this.transform.position = new Vector3(0.32f * (position.x-3), 0.24f, 0.32f * (position.y-2));
@@ -34,5 +34,6 @@ public class UnitBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
     }
 }

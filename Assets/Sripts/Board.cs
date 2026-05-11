@@ -62,26 +62,68 @@ public class Board : MonoBehaviour
                 spawnedPieces[i, j] = currentObject;
             }
         }
-        SetPieceInteractable(2,3,false);
+        SetPieceInteractable((2,3),false);
     }
 
     public void UpdatePeiceInteractability() {
-        for(int i = 0; i < spawnedPieces.GetLength(0);i++) { //7
-            for(int j = 0; j < spawnedPieces.GetLength(1);j++) { //5
-                SetPieceInteractable(i, j, false);
+        if (selectedUnitPostion == (-1,-1)) {
+            for(int i = 0; i < spawnedPieces.GetLength(0);i++) { //7
+                for(int j = 0; j < spawnedPieces.GetLength(1);j++) { //5
+                    SetPieceInteractable((i, j), false);
+                }
+            }
+
+            for (int i = 0; i < units.Count; i++) {
+                SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position, true);
             }
         }
-
-        for (int i = 0; i < units.Count; i++) {
-            SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position.x, units[i].GetComponent<UnitBehavior>().position.y, true);
+        else {
+            for(int i = 0; i < spawnedPieces.GetLength(0);i++) { //7
+                for(int j = 0; j < spawnedPieces.GetLength(1);j++) { //5
+                    SetPieceInteractable((i, j), false);
+                }
+            }
+            SetPieceInteractable(selectedUnitPostion,true);
+            if (!IsSpaceOccupied((selectedUnitPostion.x+1, selectedUnitPostion.y))){
+                SetPieceInteractable((selectedUnitPostion.x+1, selectedUnitPostion.y),true);
+            }
+            if (!IsSpaceOccupied((selectedUnitPostion.x, selectedUnitPostion.y+1))){
+                SetPieceInteractable((selectedUnitPostion.x, selectedUnitPostion.y+1),true);
+            }
+            if (!IsSpaceOccupied((selectedUnitPostion.x, selectedUnitPostion.y-1))){
+                SetPieceInteractable((selectedUnitPostion.x, selectedUnitPostion.y-1),true);
+            }
+            if (!IsSpaceOccupied((selectedUnitPostion.x-1, selectedUnitPostion.y))){
+                SetPieceInteractable((selectedUnitPostion.x-1, selectedUnitPostion.y),true);
+            } 
+            
         }
     }
-    public void SetPieceInteractable(int x, int y, bool state){
-        GameObject piece = spawnedPieces[x, y];
-        if (piece != null)
+
+    public bool IsSpaceOccupied((int x,int y) pos) {
+        for (int i = 0; i < units.Count; i++) {
+            if (units[i].GetComponent<UnitBehavior>().position == pos){
+                return true;
+            }
+        }
+        for (int i = 0; i < vampireUnits.Count; i++) {
+            if (vampireUnits[i].GetComponent<UnitBehavior>().position == pos){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void SetPieceInteractable((int x, int y) pos, bool state){
+        if (
+            pos.x >= 0 && pos.x < spawnedPieces.GetLength(0) && 
+            pos.y >= 0 && pos.y < spawnedPieces.GetLength(1) )
         {
-            Button btn = piece.GetComponent<Button>();
-            if (btn != null) btn.interactable = state;
+            GameObject piece = spawnedPieces[pos.x, pos.y];
+            if (piece != null)
+            {
+                Button btn = piece.GetComponent<Button>();
+                if (btn != null) btn.interactable = state;
+            }
         }
     }
 
@@ -90,12 +132,22 @@ public class Board : MonoBehaviour
         if (selectedUnitPostion == pos){
             spawnedPieces[pos.x,pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
             selectedUnitPostion = (-1,-1);
+            UpdatePeiceInteractability();
         } else if(selectedUnitPostion == (-1,-1)) {
             spawnedPieces[pos.x,pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
             selectedUnitPostion = pos;
             spawnedPieces[pos.x,pos.y].GetComponent<BoardButtonsScript>().setSelected(true);
+            UpdatePeiceInteractability();
+        } else {
+            for (int i = 0; i < units.Count; i++) {
+                if (units[i].GetComponent<UnitBehavior>().position == selectedUnitPostion) {
+                    units[i].GetComponent<UnitBehavior>().updatePosition(pos);
+                    break;
+                }
+            }
+            spawnedPieces[selectedUnitPostion.x,selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(false);
+            selectedUnitPostion = (-1,-1);
+            UpdatePeiceInteractability();
         }
-        
-        
     }
 }
