@@ -16,7 +16,7 @@ public class CardScript : MonoBehaviour
     public void SetSelection(bool selection)
     {
         selected = selection;
-        cardAnimator.SetBool("selected",selection);
+        cardAnimator.SetBool("selected", selection);
     }
     public void click()
     {
@@ -25,11 +25,12 @@ public class CardScript : MonoBehaviour
 
     public void OnPointerEnter()
     {
-        cardAnimator.SetBool("hovering",true);
+        cardAnimator.SetBool("hovering", true);
+        this.gameObject.transform.SetAsLastSibling();
     }
 
     public void OnPointerExit()
     {
-        cardAnimator.SetBool("hovering",false);
+        cardAnimator.SetBool("hovering", false);
     }
 }

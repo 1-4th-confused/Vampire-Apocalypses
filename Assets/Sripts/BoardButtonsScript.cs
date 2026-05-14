@@ -6,7 +6,6 @@ using System.Collections;
 public class BoardButtonsScript : MonoBehaviour
 {
     private bool isSelected = false;
-    public static Board boardScript;
     public Image selection;
     public (int x, int y) position;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,7 +22,7 @@ public class BoardButtonsScript : MonoBehaviour
 
     public void Click()
     {
-        boardScript.ClickTile(position);
+        Board.boardScript.ClickTile(position);
     }
 
     // Update is called once per frame
