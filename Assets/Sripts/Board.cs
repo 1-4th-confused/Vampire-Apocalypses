@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Net.Http.Headers;
-using UnityEngine;
 using System.Collections;
 
 public class Board : MonoBehaviour
@@ -53,6 +52,9 @@ public class Board : MonoBehaviour
         deckData.Add((CardData)CardManager.cardTypes[0]);
         deckData.Add((CardData)CardManager.cardTypes[1]);
 
+        deckDataRemaining = new List<CardData>();
+        foreach (CardData data in deckData)
+            deckDataRemaining.Add(data);
         CreateDeck();
 
         UpdatePeiceInteractability();
@@ -231,18 +233,22 @@ public class Board : MonoBehaviour
 
     public void ClickDeck()
     {
-        Debug.Log(deckObjs.Count - 1);
         deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
+        int randomIntToDraw = Random.Range(0, deckDataRemaining.Count);
+        CardData drawnCard = deckDataRemaining[randomIntToDraw];
+        deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
         deckObjs.Remove(deckObjs[deckObjs.Count - 1]);
         if (deckObjs.Count > 0)
         {
-            StartCoroutine(WaitToActivate(deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>()));
+            StartCoroutine(WaitToActivate(deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>(),drawnCard));
         }
     }
 
-    IEnumerator WaitToActivate(TableCardScript script)
+    IEnumerator WaitToActivate(TableCardScript script, CardData data)
     {
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.2f);
+        CardScript.playerHandScript.AddCardToHand(data);
+        yield return new WaitForSeconds(0.2f);
         script.Activate();
     }
 }

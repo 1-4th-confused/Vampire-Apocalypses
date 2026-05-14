@@ -32,14 +32,56 @@ public class PlayerHand : MonoBehaviour
         currentCards.Add((CardData) CardManager.cardTypes[0]);
         currentCards.Add((CardData) CardManager.cardTypes[1]);
         currentCards.Add((CardData) CardManager.cardTypes[0]);
-        RefreshHand();
+        CreateHand();
     }
     
     void Update()
     {      
         HandleCardsMoveingDown();
     }
-    public void RefreshHand()
+    public void AddCardToHand(CardData card)
+    {
+        for (int i = 0;i < currentCardObjs.Count;i++) {
+            currentCardObjs[i].GetComponent<CardScript>().MoveCard(handParent.transform.position + new Vector3(
+                (float) (
+                    (0.5+i - (currentCards.Count+1f)/2.0f) * cardSpacing
+                ),
+                (float) (
+                    maxcarddepth
+                    *
+                    (2f * (0.5f+i - (currentCards.Count+1f)/2.0f) / (currentCards.Count+1f))
+                    * 
+                    (2f * (0.5f+i - (currentCards.Count+1f)/2.0f) / (currentCards.Count+1f))
+                ),
+                0f
+            ),
+            new Vector3(0f,0f,-maxcardRotation * 2f * (0.5f + i - (currentCards.Count+1f)/2.0f) / (currentCards.Count+1f)));
+        }
+        GameObject newCard = Instantiate(
+            cardPrefab,
+            handParent.transform.position + new Vector3(
+                (float) (
+                    (0.5f + currentCards.Count - (currentCards.Count+1f)/2.0f) * cardSpacing
+                ),
+                (float) (
+                    maxcarddepth
+                    *
+                    (2f * (0.5f + currentCards.Count - (currentCards.Count+1f)/2.0f) / (currentCards.Count+1))
+                    * 
+                    (2f * (0.5f + currentCards.Count - (currentCards.Count+1f)/2.0f) / (currentCards.Count+1))
+                ),
+                0f),
+            Quaternion.identity,
+            handParent.transform
+        );
+        newCard.transform.Rotate(new Vector3(0f,0f,-maxcardRotation * 2f * (0.5f + currentCards.Count - (currentCards.Count+1)/2.0f) / (currentCards.Count+1)));
+        newCard.transform.SetParent(handParent.transform, true);
+        newCard.GetComponent<CardScript>().index = currentCards.Count;
+        currentCardObjs.Add(newCard);
+        currentCards.Add(card);
+        newCard.GetComponent<CardScript>().cardType = card;
+    }
+    public void CreateHand()
     {
         for (int i = 0;i < currentCardObjs.Count;i++) {
             if (currentCardObjs[i]!=null) {

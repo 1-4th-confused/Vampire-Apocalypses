@@ -17,7 +17,6 @@ public class TableCardScript : MonoBehaviour
     public void click()
     {
         Board.boardScript.ClickDeck();
-        Debug.Log("clicked card!");
     }
     public void OnPointerEnter()
     {
