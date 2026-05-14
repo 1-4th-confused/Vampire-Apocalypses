@@ -150,11 +150,114 @@ Transform:
   m_Children:
   - {fileID: 376239223}
   - {fileID: 884129168}
-  - {fileID: 282845062}
   - {fileID: 990904444}
   - {fileID: 275137357}
+  - {fileID: 282845062}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &259219346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 259219347}
+  - component: {fileID: 259219348}
+  m_Layer: 5
+  m_Name: CardSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &259219347
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259219346}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 706418663}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &259219348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259219346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1453524071a74524a6cc895dd80eab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  deckIndicators:
+  - {fileID: 21300000, guid: 3c6b471eba6274f0bb500425a4fa98ca, type: 3}
+  - {fileID: 21300000, guid: 82bcd6ded67204cc6ac87e1cce6cfe8b, type: 3}
+  - {fileID: 21300000, guid: 50738728c6be446d088c7d4f4d054367, type: 3}
+  currentCards:
+  - type: 
+    image: {fileID: 0}
+    name: 
+    damage: 0
+    defense: 0
+    magicDamage: 0
+    melaeDamage: 0
+    rangedDamage: 0
+  - type: 
+    image: {fileID: 0}
+    name: 
+    damage: 0
+    defense: 0
+    magicDamage: 0
+    melaeDamage: 0
+    rangedDamage: 0
+  - type: 
+    image: {fileID: 0}
+    name: 
+    damage: 0
+    defense: 0
+    magicDamage: 0
+    melaeDamage: 0
+    rangedDamage: 0
+  - type: 
+    image: {fileID: 0}
+    name: 
+    damage: 0
+    defense: 0
+    magicDamage: 0
+    melaeDamage: 0
+    rangedDamage: 0
+  - type: 
+    image: {fileID: 0}
+    name: 
+    damage: 0
+    defense: 0
+    magicDamage: 0
+    melaeDamage: 0
+    rangedDamage: 0
+  cardPrefab: {fileID: 2517035713136023135, guid: 93b4254251c89f745b60bc3326e07fdb, type: 3}
+  SelectedCard: {fileID: 0}
+  cardSpacing: 185
+  maxcardRotation: 25
+  maxcarddepth: -150
+  handParent: {fileID: 259219346}
+  cardsMovedDown: 0
+  handAnimator: {fileID: 706418664}
+  threasholdForCardsToMoveDown: 0.38
+  threasholdForCardsToMoveUp: 0.33
 --- !u!1 &267996143
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +426,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 282845061}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -760,8 +863,6 @@ GameObject:
   m_Component:
   - component: {fileID: 706418663}
   - component: {fileID: 706418664}
-  - component: {fileID: 706418666}
-  - component: {fileID: 706418665}
   m_Layer: 5
   m_Name: PlayerHand(Card Spawner)
   m_TagString: Untagged
@@ -780,90 +881,37 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 259219347}
   m_Father: {fileID: 392140213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -269}
+  m_AnchoredPosition: {x: 0, y: -444}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &706418664
-MonoBehaviour:
+--- !u!95 &706418664
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706418662}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1453524071a74524a6cc895dd80eab5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  cardTransforms:
-  - {fileID: 376239223}
-  - {fileID: 884129168}
-  - {fileID: 282845062}
-  - {fileID: 990904444}
-  - {fileID: 275137357}
-  deckIndicators:
-  - {fileID: 21300000, guid: 3c6b471eba6274f0bb500425a4fa98ca, type: 3}
-  - {fileID: 21300000, guid: 82bcd6ded67204cc6ac87e1cce6cfe8b, type: 3}
-  - {fileID: 21300000, guid: 50738728c6be446d088c7d4f4d054367, type: 3}
-  cardImages:
-  - {fileID: 2966665709755788844, guid: c04ec0282e8ec4f0c9e417496114d570, type: 3}
-  - {fileID: 3200662928660712163, guid: 8c3217e727266405e9f851c421bb0d87, type: 3}
-  - {fileID: 2966665709755788844, guid: 10ee7dc8fd3e84da48a114ea0b3025b3, type: 3}
-  - {fileID: 2335334726942613535, guid: 4e71c84024f8b4c4f9bc84672a2b137f, type: 3}
-  - {fileID: 6440793275921905523, guid: cf8f9a6949db94330987b6f0329ab31f, type: 3}
-  - {fileID: 3344392768400419208, guid: 8e812f2e186584112b74e580356f4605, type: 3}
-  - {fileID: 2517035713136023135, guid: 277817858c90e416fbb7318f9fd43274, type: 3}
-  currentCards:
-  - shrimp
-  - Vines
-  - defend
-  - slam
-  - BloodBolt
-  player: {fileID: 0}
-  cardPrefab: {fileID: 2517035713136023135, guid: 93b4254251c89f745b60bc3326e07fdb, type: 3}
---- !u!114 &706418665
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706418662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3c6b471eba6274f0bb500425a4fa98ca, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &706418666
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706418662}
-  m_CullTransparentMesh: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0cf67e614ead05e45a2b039bb4f7741a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &836651542
 GameObject:
   m_ObjectHideFlags: 0

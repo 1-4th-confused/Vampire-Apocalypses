@@ -1,22 +1,35 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardScript : MonoBehaviour, ISelectHandler, IDeselectHandler
+public class CardScript : MonoBehaviour
 {
     public CardData cardType;
+    public Animator cardAnimator;
+    public GameObject cardObject;
+    public int index;
+    public static PlayerHand playerHandScript;
+    public bool selected = false;
     void Start()
     {
-        this.gameObject.GetComponent<UnityEngine.UI.Image>().sprite = cardType.image;
+        cardObject.GetComponent<UnityEngine.UI.Image>().sprite = cardType.image;
+    }
+    public void SetSelection(bool selection)
+    {
+        selected = selection;
+        cardAnimator.SetBool("selected",selection);
+    }
+    public void click()
+    {
+        playerHandScript.ClickCard(index);
     }
 
-    public void OnSelect(BaseEventData eventData)
+    public void OnPointerEnter()
     {
-        transform.position += Vector3.up * 50;
-        
+        cardAnimator.SetBool("hovering",true);
     }
 
-    public void OnDeselect(BaseEventData eventData)
+    public void OnPointerExit()
     {
-        transform.position += Vector3.down * 50;
+        cardAnimator.SetBool("hovering",false);
     }
 }
