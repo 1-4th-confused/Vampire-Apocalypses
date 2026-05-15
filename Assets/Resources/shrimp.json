@@ -2,5 +2,6 @@
     "damage": 45.0,
     "defense": 60.0,
     "name": "shrimp",
-    "type": "card"
+    "type": "card",
+    "range": "ranged"
 }

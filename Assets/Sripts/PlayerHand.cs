@@ -38,6 +38,11 @@ public class PlayerHand : MonoBehaviour
     void Update()
     {      
         HandleCardsMoveingDown();
+        if(SelectedCard != null){
+            Board.boardScript.UpdatePeiceInteractability();
+        }
+    }
+    public void placeCard(){
     }
     public void AddCardToHand(CardData card)
     {

@@ -137,8 +137,7 @@ public class Board : MonoBehaviour
                 SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position, true);
             }
         }
-        else
-        {
+        else if(CardScript.playerHandScript.SelectedCard == null){
             for (int i = 0; i < spawnedPieces.GetLength(0); i++)
             { //7
                 for (int j = 0; j < spawnedPieces.GetLength(1); j++)
@@ -164,6 +163,8 @@ public class Board : MonoBehaviour
                 SetPieceInteractable((selectedUnitPostion.x - 1, selectedUnitPostion.y), true);
             }
 
+        }else if(CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.range == "melee"){
+            SelectMeleeUnitForCardApplication();
         }
     }
 
@@ -202,11 +203,15 @@ public class Board : MonoBehaviour
 
     public void ClickTile((int x, int y) pos)
     {
-        if (selectedUnitPostion == pos)
+        if (selectedUnitPostion == pos && CardScript.playerHandScript.SelectedCard == null)
         {
             spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
             selectedUnitPostion = (-1, -1);
             UpdatePeiceInteractability();
+        }
+        else if(CardScript.playerHandScript.SelectedCard != null){
+            UpdatePeiceInteractability();
+            Debug.Log("rui's mom");
         }
         else if (selectedUnitPostion == (-1, -1))
         {
@@ -250,5 +255,25 @@ public class Board : MonoBehaviour
         CardScript.playerHandScript.AddCardToHand(data);
         yield return new WaitForSeconds(0.2f);
         script.Activate();
+    }
+
+    public void SelectMeleeUnitForCardApplication(){
+        Debug.Log("0");
+        if(selectedUnitPostion != (-1,-1)){
+            Debug.Log("1");
+            for(int i = -1; i <= 1; i++){
+                Debug.Log("2");
+                for(int j = -1; j <= 1; j++){
+                    Debug.Log("3");
+                    if(i != 0 && j != 0){
+                        Debug.Log("4");
+                        if(!IsSpaceOccupied((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
+                            Debug.Log("5");
+                            SetPieceInteractable((selectedUnitPostion.x+i,selectedUnitPostion.y+j),true);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

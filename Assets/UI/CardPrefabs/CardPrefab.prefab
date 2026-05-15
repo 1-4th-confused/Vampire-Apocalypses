@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f1ae034189b23e14eb7e2b262e0d315a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc2ba5f30d2ec4a41a5ec9cd490dfd32, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -138,6 +138,11 @@ MonoBehaviour:
   cardObject: {fileID: 4064541163945856522}
   index: 0
   selected: 0
+  moved: 0
+  CurrentPos: {x: 0, y: 0, z: 0}
+  CurrentRot: {x: 0, y: 0, z: 0}
+  wantedPos: {x: 0, y: 0, z: 0}
+  wantedRot: {x: 0, y: 0, z: 0}
 --- !u!95 &6030027985299579519
 Animator:
   serializedVersion: 7
