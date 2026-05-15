@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Net.Http.Headers;
 using System.Collections;
+using System.IO;
 
 public class Board : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Board : MonoBehaviour
     public Transform commonParent;
     public Transform unitsParrent;
     public static Board boardScript;
+    public static string cardSpecification = null;
 
     public List<GameObject> deckObjs;
     public List<CardData> deckData;
@@ -122,6 +124,11 @@ public class Board : MonoBehaviour
 
     public void UpdatePeiceInteractability()
     {
+        if(CardScript.playerHandScript.SelectedCard != null){
+            cardSpecification = CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.range;
+        }else{
+            cardSpecification = null;
+        }
         if (selectedUnitPostion == (-1, -1))
         {
             for (int i = 0; i < spawnedPieces.GetLength(0); i++)
@@ -162,9 +169,12 @@ public class Board : MonoBehaviour
             {
                 SetPieceInteractable((selectedUnitPostion.x - 1, selectedUnitPostion.y), true);
             }
-
-        }else if(CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.range == "melee"){
+        }else if(cardSpecification == "melee"){
             SelectMeleeUnitForCardApplication();
+            Debug.Log("Melee?");
+        }else if(cardSpecification == "ranged"){
+            SelectRangeUnitForCardApplication();
+            Debug.Log("Range?");
         }
     }
 
@@ -237,15 +247,17 @@ public class Board : MonoBehaviour
     }
 
     public void ClickDeck()
-    {
-        deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
-        int randomIntToDraw = Random.Range(0, deckDataRemaining.Count);
-        CardData drawnCard = deckDataRemaining[randomIntToDraw];
-        deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
-        deckObjs.Remove(deckObjs[deckObjs.Count - 1]);
-        if (deckObjs.Count > 0)
-        {
-            StartCoroutine(WaitToActivate(deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>(),drawnCard));
+    {   
+        if(CardScript.playerHandScript.currentCards.Count < 5){
+            deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
+            int randomIntToDraw = Random.Range(0, deckDataRemaining.Count);
+            CardData drawnCard = deckDataRemaining[randomIntToDraw];
+            deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
+            deckObjs.Remove(deckObjs[deckObjs.Count - 1]);
+            if (deckObjs.Count > 0)
+            {
+                StartCoroutine(WaitToActivate(deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>(),drawnCard));
+            }
         }
     }
 
@@ -257,22 +269,33 @@ public class Board : MonoBehaviour
         script.Activate();
     }
 
+    public void clearInterabilityMatrix(){
+        for(int i = 0; i < 7; i++){
+            for(int j = 0; j < 5; j++){
+                SetPieceInteractable((i,j),false);
+            }
+        }
+    }
+
     public void SelectMeleeUnitForCardApplication(){
-        Debug.Log("0");
+        // clearInterabilityMatrix();
         if(selectedUnitPostion != (-1,-1)){
-            Debug.Log("1");
             for(int i = -1; i <= 1; i++){
-                Debug.Log("2");
                 for(int j = -1; j <= 1; j++){
-                    Debug.Log("3");
                     if(i != 0 && j != 0){
-                        Debug.Log("4");
                         if(!IsSpaceOccupied((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
-                            Debug.Log("5");
                             SetPieceInteractable((selectedUnitPostion.x+i,selectedUnitPostion.y+j),true);
                         }
                     }
                 }
+            }
+        }
+    }
+    public void SelectRangeUnitForCardApplication(){
+        // clearInterabilityMatrix();
+        for(int i = 0; i < units.Count; i++){
+            if(units[i].GetComponent<UnitBehavior>().position!= selectedUnitPostion){
+                SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position,true);
             }
         }
     }
