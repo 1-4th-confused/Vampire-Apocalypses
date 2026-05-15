@@ -35,8 +35,6 @@ public class CardScript : MonoBehaviour
                     (float)(CurrentPos.y + (timeAlongPathNormalized*(wantedPos.y - CurrentPos.y))),
                     (float)(CurrentPos.z + (timeAlongPathNormalized*(wantedPos.z - CurrentPos.z)))
                 );
-                float tempXrot = (float)(CurrentRot.x + (timeAlongPathNormalized*(wantedRot.x - CurrentRot.x)));
-                float tempYrot = (float)(CurrentRot.y + (timeAlongPathNormalized*(wantedRot.y - CurrentRot.y)));
                 float wantedZ = wantedRot.z;
                 float currentZ = CurrentRot.z;
                 if (wantedZ > 180)

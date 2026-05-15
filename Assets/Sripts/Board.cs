@@ -221,7 +221,7 @@ public class Board : MonoBehaviour
             {
                 if (units[i].GetComponent<UnitBehavior>().position == selectedUnitPostion)
                 {
-                    units[i].GetComponent<UnitBehavior>().updatePosition(pos);
+                    units[i].GetComponent<UnitBehavior>().movePosition(pos);
                     break;
                 }
             }
