@@ -1,0 +1,8 @@
+{
+    "name": "pigeon",
+    "type": "unit",
+    "magicDamage": 0,
+    "meleeDamage": 1,
+    "rangedDamage": 4,
+    "maxHealth":5
+}

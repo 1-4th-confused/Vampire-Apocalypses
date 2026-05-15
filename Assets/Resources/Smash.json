@@ -1,0 +1,7 @@
+{
+    "damage": 10.0,
+    "defense": 0.0,
+    "name": "smash",
+    "type": "card",
+    "range": "ranged"
+}

@@ -1,0 +1,8 @@
+{
+    "name": "shamen",
+    "type": "unit",
+    "magicDamage": 5,
+    "meleeDamage": 1,
+    "rangedDamage": 0,
+    "maxHealth":10
+}

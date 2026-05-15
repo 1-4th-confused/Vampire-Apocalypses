@@ -1,0 +1,8 @@
+{
+    "name": "vampire",
+    "type": "unit",
+    "magicDamage": 2,
+    "meleeDamage": 1,
+    "rangedDamage": 1,
+    "maxHealth":15
+}

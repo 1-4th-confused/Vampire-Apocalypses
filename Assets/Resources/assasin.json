@@ -1,0 +1,7 @@
+{
+    "damage": 5.0,
+    "defense": 0.0,
+    "name": "assasin",
+    "type": "card",
+    "range": "melee"
+}

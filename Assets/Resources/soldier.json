@@ -1,0 +1,8 @@
+{
+    "name": "soldior",
+    "type": "unit",
+    "magicDamage": 0,
+    "meleeDamage": 2,
+    "rangedDamage": 1,
+    "maxHealth":10
+}

@@ -1,0 +1,8 @@
+{
+    "name": "sniper",
+    "type": "unit",
+    "magicDamage": 0,
+    "meleeDamage": 1,
+    "rangedDamage": 5,
+    "maxHealth":10
+}

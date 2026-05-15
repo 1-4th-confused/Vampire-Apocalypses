@@ -1,0 +1,8 @@
+{
+    "name": "dog",
+    "type": "unit",
+    "magicDamage": 1,
+    "meleeDamage": 1,
+    "rangedDamage": 0,
+    "maxHealth":5
+}

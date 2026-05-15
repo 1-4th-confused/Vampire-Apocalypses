@@ -1,0 +1,8 @@
+{
+    "name": "magician",
+    "type": "unit",
+    "magicDamage": 5,
+    "meleeDamage": 0,
+    "rangedDamage": 0,
+    "maxHealth":15
+}
