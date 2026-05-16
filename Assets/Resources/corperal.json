@@ -1,0 +1,8 @@
+{
+    "name": "corperal",
+    "type": "unit",
+    "magicDamage": 0,
+    "melaeDamage": 2,
+    "rangedDamage": 3,
+    "maxHealth":12
+}

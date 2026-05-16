@@ -1,0 +1,7 @@
+{
+    "damage": 8.0,
+    "defense": 0.0,
+    "name": "archer",
+    "type": "card",
+    "range": "ranged"
+}

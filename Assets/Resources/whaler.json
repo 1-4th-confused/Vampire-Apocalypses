@@ -1,0 +1,8 @@
+{
+    "name": "whaler",
+    "type": "unit",
+    "magicDamage": 0,
+    "melaeDamage": 1,
+    "rangedDamage": 8,
+    "maxHealth":12
+}

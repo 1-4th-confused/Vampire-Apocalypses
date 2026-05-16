@@ -2,7 +2,7 @@
     "name": "soldior",
     "type": "unit",
     "magicDamage": 0,
-    "melaeDamage": 2,
+    "meleeDamage": 2,
     "rangedDamage": 1,
     "maxHealth":10
 }
