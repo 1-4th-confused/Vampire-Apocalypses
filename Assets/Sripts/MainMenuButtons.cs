@@ -1,15 +1,24 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Handles main menu button interactions.
+/// </summary>
 public class MainMenuButtons : MonoBehaviour
 {
-    public static void newGame() {
-        Debug.Log("rui is right");
+    /// <summary>
+    /// Starts a new game by loading the battle scene.
+    /// </summary>
+    public static void newGame()
+    {
         SceneManager.LoadScene("Battle", LoadSceneMode.Single);
     }
 
-    public static void openGame() {
-        Debug.Log("rui's ego grows");
+    /// <summary>
+    /// Opens an existing game by loading the battle scene.
+    /// </summary>
+    public static void openGame()
+    {
         SceneManager.LoadScene("Battle", LoadSceneMode.Single);
     }
 }

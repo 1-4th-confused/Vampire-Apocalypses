@@ -1,17 +1,48 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles the behavior and movement of units on the game board.
+/// </summary>
 public class UnitBehavior : MonoBehaviour
 {
+    /// <summary>
+    /// Current grid position of the unit.
+    /// </summary>
     public (int x, int y) position = (0, 0);
+
+    /// <summary>
+    /// Data associated with this unit.
+    /// </summary>
     public CardData unitdata;
+
+    /// <summary>
+    /// GameObject containing the unit's image.
+    /// </summary>
     public GameObject imageObj;
+
+    /// <summary>
+    /// Time when the unit started moving.
+    /// </summary>
     public double timeMoved;
+
+    /// <summary>
+    /// Flag indicating if the unit is currently moving.
+    /// </summary>
     public bool moved;
+
+    /// <summary>
+    /// Current position of the unit in world space.
+    /// </summary>
     public Vector3 currentPosition;
+
+    /// <summary>
+    /// Target position for movement animation.
+    /// </summary>
     public Vector3 wantedPosition;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// Initializes the unit's image and position.
+    /// </summary>
     void Start()
     {
         imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;

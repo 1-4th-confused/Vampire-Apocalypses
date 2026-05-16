@@ -5,35 +5,96 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.IO;
 
+/// <summary>
+/// Manages the game board, including unit placement, tile interaction, and deck management.
+/// </summary>
 public class Board : MonoBehaviour
 {
+    /// <summary>
+    /// List of player units on the board.
+    /// </summary>
     public List<GameObject> units = new List<GameObject>();
+
+    /// <summary>
+    /// List of vampire units on the board.
+    /// </summary>
     public List<GameObject> vampireUnits = new List<GameObject>();
+
+    /// <summary>
+    /// Prefab for instantiating units.
+    /// </summary>
     public GameObject unitPrefab;
+
+    /// <summary>
+    /// Common parent transform for board elements.
+    /// </summary>
     public Transform commonParent;
+
+    /// <summary>
+    /// Parent transform for units.
+    /// </summary>
     public Transform unitsParrent;
+
+    /// <summary>
+    /// Static reference to the board script instance.
+    /// </summary>
     public static Board boardScript;
     public static string cardSpecification = null;
 
+    /// <summary>
+    /// List of deck card game objects.
+    /// </summary>
     public List<GameObject> deckObjs;
+
+    /// <summary>
+    /// List of card data for the deck.
+    /// </summary>
     public List<CardData> deckData;
+
+    /// <summary>
+    /// List of remaining card data in the deck.
+    /// </summary>
     public List<CardData> deckDataRemaining;
+
+    /// <summary>
+    /// Prefab for deck cards.
+    /// </summary>
     public GameObject deckCardPrefab;
+
+    /// <summary>
+    /// Parent transform for deck cards.
+    /// </summary>
     public GameObject deckCardParent;
 
-
+    /// <summary>
+    /// Bottom-left transform for tile positioning.
+    /// </summary>
     [SerializeField] private Transform bottomLeftTransform;
+
+    /// <summary>
+    /// Prefab for board tiles.
+    /// </summary>
     [SerializeField] private GameObject place;
 
+    /// <summary>
+    /// 2D array of spawned tile pieces.
+    /// </summary>
     private GameObject[,] spawnedPieces;
+
+    /// <summary>
+    /// Position of the currently selected unit.
+    /// </summary>
     public (int x, int y) selectedUnitPostion = (-1, -1);
+
+    /// <summary>
+    /// Initializes the board, units, tiles, and deck.
+    /// </summary>
     void Start()
     {
         boardScript = this;
 
-
         CardManager.ReadUnitsJSON();
-        //temporary
+        // Temporary unit initialization
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         units[0].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
@@ -43,6 +104,7 @@ public class Board : MonoBehaviour
 
         CreateTiles();
 
+        // Initialize deck data
         deckData = new List<CardData>();
         deckData.Add((CardData)CardManager.cardTypes[0]);
         deckData.Add((CardData)CardManager.cardTypes[1]);
@@ -62,6 +124,9 @@ public class Board : MonoBehaviour
         UpdatePeiceInteractability();
     }
 
+    /// <summary>
+    /// Destroys existing deck objects and recreates the deck.
+    /// </summary>
     void CreateDeck()
     {
         for (int i = 0; i < deckObjs.Count; i++)
@@ -69,9 +134,11 @@ public class Board : MonoBehaviour
             Destroy(deckObjs[i]);
         }
         StartCoroutine(CreateDeckInSequence());
-
     }
 
+    /// <summary>
+    /// Coroutine to instantiate deck cards sequentially with delays.
+    /// </summary>
     IEnumerator CreateDeckInSequence()
     {
         for (int i = 0; i < deckData.Count; i++)
@@ -88,6 +155,9 @@ public class Board : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates the 7x5 grid of board tiles.
+    /// </summary>
     void CreateTiles()
     {
         if (bottomLeftTransform == null) return;
@@ -100,17 +170,16 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < rows; j++)
             {
-
                 float x = bottomLeftTransform.position.x + ((i - 3) * 0.32f);
-                float y = 0.0f;//bottomLeftTransform.position.y + 0.5f;
+                float y = 0.0f;
                 float z = bottomLeftTransform.position.z + ((j - 2) * 0.32f);
 
                 Vector3 newPos = new Vector3(x, y, z);
                 Vector3 newRot = new Vector3(90, 0, 0);
 
-                // Instantiate as a sibling (sharing the same parent as Board)
+                // Instantiate tile as child of commonParent
                 GameObject currentObject = Instantiate(place, newPos, Quaternion.Euler(newRot), commonParent);
-
+                
                 currentObject.GetComponent<BoardButtonsScript>().position = (i, j);
 
                 currentObject.layer = LayerMask.NameToLayer("units");
@@ -122,6 +191,9 @@ public class Board : MonoBehaviour
         SetPieceInteractable((2, 3), false);
     }
 
+    /// <summary>
+    /// Updates the interactability of board tiles based on unit selection and movement.
+    /// </summary>
     public void UpdatePeiceInteractability()
     {
         if(CardScript.playerHandScript.SelectedCard != null){
@@ -140,9 +212,9 @@ public class Board : MonoBehaviour
         else if(CardScript.playerHandScript.SelectedCard == null){
             clearInterabilityMatrix();
             for (int i = 0; i < spawnedPieces.GetLength(0); i++)
-            { //7
+            {
                 for (int j = 0; j < spawnedPieces.GetLength(1); j++)
-                { //5
+                {
                     SetPieceInteractable((i, j), false);
                 }
             }
@@ -180,6 +252,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if a board position is occupied by any unit.
+    /// </summary>
+    /// <param name="pos">The position to check.</param>
+    /// <returns>True if occupied, false otherwise.</returns>
     public bool IsSpaceOccupied((int x, int y) pos)
     {
         for (int i = 0; i < units.Count; i++)
@@ -198,6 +275,12 @@ public class Board : MonoBehaviour
         }
         return false;
     }
+
+    /// <summary>
+    /// Sets the interactability of a board tile.
+    /// </summary>
+    /// <param name="pos">The tile position.</param>
+    /// <param name="state">True to enable, false to disable.</param>
     public void SetPieceInteractable((int x, int y) pos, bool state)
     {
         if (
@@ -207,18 +290,22 @@ public class Board : MonoBehaviour
             GameObject piece = spawnedPieces[pos.x, pos.y];
             if (piece != null)
             {
-                Button btn = piece.GetComponent<Button>();
+                Button btn = piece.transform.GetChild(0).gameObject.GetComponent<Button>();
                 if (btn != null) btn.interactable = state;
             }
         }
     }
 
+    /// <summary>
+    /// Handles tile click events for unit selection and movement.
+    /// </summary>
+    /// <param name="pos">The clicked tile position.</param>
     public void ClickTile((int x, int y) pos)
     {
         if (selectedUnitPostion == pos && CardScript.playerHandScript.SelectedCard == null)
         {
             clearInterabilityMatrix();
-            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
+            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
             selectedUnitPostion = (-1, -1);
             UpdatePeiceInteractability();
         }
@@ -228,13 +315,15 @@ public class Board : MonoBehaviour
         }
         else if (selectedUnitPostion == (-1, -1))
         {
-            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(false);
+            // Select unit
+            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
             selectedUnitPostion = pos;
-            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(true);
+            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(1);
             UpdatePeiceInteractability();
         }
         else
         {
+            // Move selected unit to new position
             for (int i = 0; i < units.Count; i++)
             {
                 if (units[i].GetComponent<UnitBehavior>().position == selectedUnitPostion)
@@ -243,12 +332,15 @@ public class Board : MonoBehaviour
                     break;
                 }
             }
-            spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(false);
+            spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(0);
             selectedUnitPostion = (-1, -1);
             UpdatePeiceInteractability();
         }
     }
 
+    /// <summary>
+    /// Handles deck click to draw a card.
+    /// </summary>
     public void ClickDeck()
     {   
         if(CardScript.playerHandScript.currentCards.Count < 5){
@@ -264,6 +356,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Coroutine to wait before activating the next deck card and adding drawn card to hand.
+    /// </summary>
+    /// <param name="script">The table card script to activate.</param>
+    /// <param name="data">The drawn card data.</param>
     IEnumerator WaitToActivate(TableCardScript script, CardData data)
     {
         yield return new WaitForSeconds(0.2f);
@@ -289,9 +386,13 @@ public class Board : MonoBehaviour
                 for(int j = -1; j <= 1; j++){
                     if(i != 0 || j != 0){
                         if(!IsSpaceOccupied((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
-                            Debug.Log("set("+i+","+j+")");
+                            spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(3);
                             SetPieceInteractable((selectedUnitPostion.x+i,selectedUnitPostion.y+j),true);
+                        }else{
+                        spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(0);
                         }
+                    }else{
+                        spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(0);
                     }
                 }
             }
@@ -304,6 +405,7 @@ public class Board : MonoBehaviour
         clearInterabilityMatrix();
         for(int i = 0; i < units.Count; i++){
             if(units[i].GetComponent<UnitBehavior>().position!= selectedUnitPostion){
+                spawnedPieces[units[i].GetComponent<UnitBehavior>().position.x,units[i].GetComponent<UnitBehavior>().position.y].GetComponent<BoardButtonsScript>().setSelected(3);
                 SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position,true);
             }
         }
