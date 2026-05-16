@@ -75,6 +75,7 @@ public class CardScript : MonoBehaviour
     public void click()
     {
         playerHandScript.ClickCard(index);
+        Board.boardScript.UpdatePeiceInteractability();
     }
 
     public void OnPointerEnter()
