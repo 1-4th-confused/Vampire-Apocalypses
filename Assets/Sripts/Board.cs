@@ -102,6 +102,10 @@ public class Board : MonoBehaviour
         units[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
         units[1].GetComponent<UnitBehavior>().position = (1, 1);
 
+        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        units[2].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
+        units[2].GetComponent<UnitBehavior>().position = (1,3);
+
         CreateTiles();
 
         // Initialize deck data
@@ -218,7 +222,9 @@ public class Board : MonoBehaviour
                     SetPieceInteractable((i, j), false);
                 }
             }
+            spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
             SetPieceInteractable(selectedUnitPostion, true);
+
             if (!IsSpaceOccupied((selectedUnitPostion.x + 1, selectedUnitPostion.y)))
             {
                 SetPieceInteractable((selectedUnitPostion.x + 1, selectedUnitPostion.y), true);
@@ -249,6 +255,12 @@ public class Board : MonoBehaviour
             clearInterabilityMatrix();
             SelectRangeUnitForCardApplication();
             Debug.Log("Range?");
+        }
+        else{
+            clearInterabilityMatrix();
+            spawnedPieces[selectedUnitPostion.x,selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
+            SelectSelfUnitForCardApplication();
+            Debug.Log("Self?");
         }
     }
 
@@ -371,12 +383,13 @@ public class Board : MonoBehaviour
 
     public void clearInterabilityMatrix(){
         for (int i = 0; i < spawnedPieces.GetLength(0); i++)
-            { //7
-                for (int j = 0; j < spawnedPieces.GetLength(1); j++)
-                { //5
-                    SetPieceInteractable((i, j), false);
-                }
+        { //7
+            for (int j = 0; j < spawnedPieces.GetLength(1); j++)
+            { //5
+                spawnedPieces[i,j].GetComponent<BoardButtonsScript>().setSelected(0);
+                SetPieceInteractable((i, j), false);
             }
+        }
     }
 
     public void SelectMeleeUnitForCardApplication(){
@@ -385,14 +398,14 @@ public class Board : MonoBehaviour
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
                     if(i != 0 || j != 0){
-                        if(!IsSpaceOccupied((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
+                        if(IsSpaceOccupied((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
                             spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(3);
                             SetPieceInteractable((selectedUnitPostion.x+i,selectedUnitPostion.y+j),true);
                         }else{
                         spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(0);
                         }
                     }else{
-                        spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(0);
+                        spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(1);
                     }
                 }
             }
@@ -408,6 +421,20 @@ public class Board : MonoBehaviour
                 spawnedPieces[units[i].GetComponent<UnitBehavior>().position.x,units[i].GetComponent<UnitBehavior>().position.y].GetComponent<BoardButtonsScript>().setSelected(3);
                 SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position,true);
             }
+        }
+        if(selectedUnitPostion != (-1,-1)){
+            spawnedPieces[selectedUnitPostion.x,selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
+        }
+        if(CardScript.playerHandScript.SelectedCard == null){
+            clearInterabilityMatrix();
+        }
+    }
+
+    public void SelectSelfUnitForCardApplication(){
+        clearInterabilityMatrix();
+        if(selectedUnitPostion != (-1,-1)){
+            spawnedPieces[selectedUnitPostion.x,selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(3);
+            SetPieceInteractable((selectedUnitPostion.x,selectedUnitPostion.y),true);
         }
         if(CardScript.playerHandScript.SelectedCard == null){
             clearInterabilityMatrix();
