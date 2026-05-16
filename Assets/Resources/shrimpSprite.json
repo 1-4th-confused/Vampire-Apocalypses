@@ -1,0 +1,8 @@
+{
+    "name": "shrimpSprite",
+    "type": "unit",
+    "magicDamage": 5,
+    "melaeDamage": 0,
+    "rangedDamage": 8,
+    "maxHealth":15
+}

@@ -1,0 +1,7 @@
+{
+    "damage": 7.0,
+    "defense": 0.0,
+    "name": "bloodBolt",
+    "type": "card",
+    "range": "ranged"
+}

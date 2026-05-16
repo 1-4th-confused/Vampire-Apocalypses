@@ -1,0 +1,7 @@
+{
+    "damage": 6.0,
+    "defense": 5.0,
+    "name": "slam",
+    "type": "card",
+    "range": "ranged"
+}
