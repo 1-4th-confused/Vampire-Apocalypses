@@ -322,7 +322,10 @@ public class Board : MonoBehaviour
             UpdatePeiceInteractability();
         }
         else if(CardScript.playerHandScript.SelectedCard != null){
-            Debug.Log("rui's mom");
+            if(selectedUnitPostion == pos)
+            {
+                SetPieceInteractable(pos,false);
+            }
             UpdatePeiceInteractability();
         }
         else if (selectedUnitPostion == (-1, -1))
