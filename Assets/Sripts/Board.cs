@@ -15,6 +15,7 @@ public class Board : MonoBehaviour
     /// </summary>
     public List<GameObject> units = new List<GameObject>();
 
+
     /// <summary>
     /// List of vampire units on the board.
     /// </summary>
@@ -95,15 +96,24 @@ public class Board : MonoBehaviour
 
         CardManager.ReadUnitsJSON();
         // Temporary unit initialization
+
+        vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        vampireUnits[0].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[3]);
+        vampireUnits[0].GetComponent<UnitBehavior>().position = (1, 4);
+
+        vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        vampireUnits[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[4]);
+        vampireUnits[1].GetComponent<UnitBehavior>().position = (3, 4);
+
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         units[0].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
         units[0].GetComponent<UnitBehavior>().position = (3, 3);
-        units[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
+        units[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[1]);
         units[1].GetComponent<UnitBehavior>().position = (1, 1);
 
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        units[2].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
+        units[2].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[2]);
         units[2].GetComponent<UnitBehavior>().position = (1,3);
 
         CreateTiles();
@@ -220,6 +230,7 @@ public class Board : MonoBehaviour
                 for (int j = 0; j < spawnedPieces.GetLength(1); j++)
                 {
                     SetPieceInteractable((i, j), false);
+                    
                 }
             }
             spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
@@ -250,17 +261,14 @@ public class Board : MonoBehaviour
         }else if(cardSpecification == "melee"){
             clearInterabilityMatrix();
             SelectMeleeUnitForCardApplication();
-            Debug.Log("Melee?");
         }else if(cardSpecification == "ranged"){
             clearInterabilityMatrix();
             SelectRangeUnitForCardApplication();
-            Debug.Log("Range?");
         }
         else{
             clearInterabilityMatrix();
             spawnedPieces[selectedUnitPostion.x,selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
             SelectSelfUnitForCardApplication();
-            Debug.Log("Self?");
         }
     }
 
@@ -325,6 +333,29 @@ public class Board : MonoBehaviour
             if(selectedUnitPostion == pos)
             {
                 SetPieceInteractable(pos,false);
+            }else{
+                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
+                if(CardScript.playerHandScript.SelectedCard != null){
+                    var cardToRemove = CardScript.playerHandScript.SelectedCard;
+                    var cardData = cardToRemove.GetComponent<CardScript>().cardType;
+                    var damage = cardData.damage;
+                    
+                    // Iterate backwards to safely remove during iteration
+                    for(int i = vampireUnits.Count - 1; i >= 0; i--){
+                        if(i < vampireUnits.Count && vampireUnits[i] != null && 
+                            vampireUnits[i].GetComponent<UnitBehavior>().position == pos){
+                            vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage);
+                            break;
+                        }
+                    }
+                    
+                    CardScript.playerHandScript.currentCards.Remove(cardData);
+                    CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
+                    
+                    Destroy(cardToRemove, 0.5f);
+                    CardScript.playerHandScript.SelectedCard = null;
+                }
+                Debug.Log(pos);
             }
             UpdatePeiceInteractability();
         }
@@ -356,32 +387,61 @@ public class Board : MonoBehaviour
     /// <summary>
     /// Handles deck click to draw a card.
     /// </summary>
+    // ...existing code...
     public void ClickDeck()
     {   
-        if(CardScript.playerHandScript.currentCards.Count < 5){
-            deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
+        if (CardScript.playerHandScript.currentCards.Count < 5 && deckObjs.Count > 0) {
+            // capture top object and its script
+            int topIndex = deckObjs.Count - 1;
+            GameObject topObj = deckObjs[topIndex];
+            TableCardScript topScript = null;
+            if (topObj != null)
+                topScript = topObj.transform.GetChild(0).GetComponent<TableCardScript>();
+
+            // remove/top card visuals (this may Destroy topObj)
+            topScript?.RemoveCard();
+
+            // draw data
             int randomIntToDraw = Random.Range(0, deckDataRemaining.Count);
             CardData drawnCard = deckDataRemaining[randomIntToDraw];
-            deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
-            deckObjs.Remove(deckObjs[deckObjs.Count - 1]);
-            if (deckObjs.Count > 0)
+            deckDataRemaining.RemoveAt(randomIntToDraw);
+
+            // remove the top object reference from the list
+            deckObjs.RemoveAt(topIndex);
+
+            // prepare nextScript safely (may be null if deck empty)
+            TableCardScript nextScript = null;
+            if (deckObjs.Count > 0 && deckObjs[deckObjs.Count - 1] != null) {
+                var newTop = deckObjs[deckObjs.Count - 1];
+                nextScript = newTop.transform.GetChild(0).GetComponent<TableCardScript>();
+            }
+
+            if (nextScript != null)
             {
-                StartCoroutine(WaitToActivate(deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>(),drawnCard));
+                StartCoroutine(WaitToActivate(nextScript, drawnCard));
+            }
+            else
+            {
+                // If no visual card to activate, still add drawn card immediately
+                CardScript.playerHandScript.AddCardToHand(drawnCard);
             }
         }
     }
 
-    /// <summary>
-    /// Coroutine to wait before activating the next deck card and adding drawn card to hand.
-    /// </summary>
-    /// <param name="script">The table card script to activate.</param>
-    /// <param name="data">The drawn card data.</param>
-    IEnumerator WaitToActivate(TableCardScript script, CardData data)
-    {
+    IEnumerator WaitToActivate(TableCardScript script, CardData data){
         yield return new WaitForSeconds(0.2f);
-        CardScript.playerHandScript.AddCardToHand(data);
+
+        try{
+            CardScript.playerHandScript.AddCardToHand(data);
+        }
+        catch (System.Exception ex){
+            Debug.LogError($"AddCardToHand failed: {ex.Message}\n{ex.StackTrace}");
+        }
+
         yield return new WaitForSeconds(0.2f);
-        script.Activate();
+
+        if (script != null && script.gameObject != null)
+            script.Activate();
     }
 
     public void clearInterabilityMatrix(){
@@ -395,13 +455,24 @@ public class Board : MonoBehaviour
         }
     }
 
+    public bool whosThatVampire((int x, int y) pos){
+        for (int i = 0; i < vampireUnits.Count; i++)
+        {
+            if (vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void SelectMeleeUnitForCardApplication(){
         clearInterabilityMatrix();
         if(selectedUnitPostion != (-1,-1)){
             for(int i = -1; i <= 1; i++){
                 for(int j = -1; j <= 1; j++){
                     if(i != 0 || j != 0){
-                        if(IsSpaceOccupied((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
+                        if(whosThatVampire((selectedUnitPostion.x+i,selectedUnitPostion.y+j))){
                             spawnedPieces[selectedUnitPostion.x+i,selectedUnitPostion.y+j].GetComponent<BoardButtonsScript>().setSelected(3);
                             SetPieceInteractable((selectedUnitPostion.x+i,selectedUnitPostion.y+j),true);
                         }else{
@@ -419,10 +490,10 @@ public class Board : MonoBehaviour
     }
     public void SelectRangeUnitForCardApplication(){
         clearInterabilityMatrix();
-        for(int i = 0; i < units.Count; i++){
-            if(units[i].GetComponent<UnitBehavior>().position!= selectedUnitPostion){
-                spawnedPieces[units[i].GetComponent<UnitBehavior>().position.x,units[i].GetComponent<UnitBehavior>().position.y].GetComponent<BoardButtonsScript>().setSelected(3);
-                SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position,true);
+        for(int i = 0; i < vampireUnits.Count; i++){
+            if(vampireUnits[i].GetComponent<UnitBehavior>().position!= selectedUnitPostion){
+                spawnedPieces[vampireUnits[i].GetComponent<UnitBehavior>().position.x,vampireUnits[i].GetComponent<UnitBehavior>().position.y].GetComponent<BoardButtonsScript>().setSelected(3);
+                SetPieceInteractable(vampireUnits[i].GetComponent<UnitBehavior>().position,true);
             }
         }
         if(selectedUnitPostion != (-1,-1)){
@@ -441,6 +512,23 @@ public class Board : MonoBehaviour
         }
         if(CardScript.playerHandScript.SelectedCard == null){
             clearInterabilityMatrix();
+        }
+    }
+
+    public void removeUnit(GameObject unit){
+        for(int i = 0; i < units.Count; i++){
+            if(units[i] == unit){
+                Destroy(units[i],0.5f);
+                units.RemoveAt(i);
+                return;
+            }
+        }
+        for(int i = 0; i < vampireUnits.Count; i++){
+            if(vampireUnits[i] == unit){
+                Destroy(vampireUnits[i],0.5f);
+                vampireUnits.RemoveAt(i);
+                return;
+            }
         }
     }
 }

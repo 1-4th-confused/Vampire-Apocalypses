@@ -15,6 +15,7 @@ public class CardData
     /// </summary>
     public string type;
     public string range;
+    public double maxHealth;
 
     /// <summary>
     /// Sprite image for the card/unit.

@@ -18,7 +18,7 @@ public class PlayerHand : MonoBehaviour
     /// <summary>
     /// List of current card game objects in the hand.
     /// </summary>
-    private List<GameObject> currentCardObjs;
+    public List<GameObject> currentCardObjs;
 
     /// <summary>
     /// List of current card data in the hand.
