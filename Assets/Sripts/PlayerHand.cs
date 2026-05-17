@@ -255,4 +255,26 @@ public class PlayerHand : MonoBehaviour
             cardsMovedDown = false;
         }
     }
+
+    public void rehandTheHand()
+    {
+        for(int i = 0; i < currentCardObjs.Count; i++)
+        {
+            currentCardObjs[i].GetComponent<CardScript>().index = i;
+            currentCardObjs[i].GetComponent<CardScript>().MoveCard(handParent.transform.position + new Vector3(
+                (float)(
+                    (0.5 + i - (currentCards.Count) / 2.0f) * cardSpacing
+                ),
+                (float)(
+                    maxcarddepth
+                    *
+                    (2f * (0.5f + i - (currentCards.Count) / 2.0f) / (currentCards.Count))
+                    *
+                    (2f * (0.5f + i - (currentCards.Count) / 2.0f) / (currentCards.Count))
+                ),
+                0f
+            ),
+            new Vector3(0f, 0f, -maxcardRotation * 2f * (0.5f + i - (currentCards.Count) / 2.0f) / (currentCards.Count)));
+        }
+    }
 }

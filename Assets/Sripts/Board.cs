@@ -330,34 +330,43 @@ public class Board : MonoBehaviour
             UpdatePeiceInteractability();
         }
         else if(CardScript.playerHandScript.SelectedCard != null){
-            if(selectedUnitPostion == pos)
-            {
-                SetPieceInteractable(pos,false);
-            }else{
-                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
-                if(CardScript.playerHandScript.SelectedCard != null){
-                    var cardToRemove = CardScript.playerHandScript.SelectedCard;
-                    var cardData = cardToRemove.GetComponent<CardScript>().cardType;
-                    var damage = cardData.damage;
-                    
-                    // Iterate backwards to safely remove during iteration
-                    for(int i = vampireUnits.Count - 1; i >= 0; i--){
-                        if(i < vampireUnits.Count && vampireUnits[i] != null && 
-                            vampireUnits[i].GetComponent<UnitBehavior>().position == pos){
-                            vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage);
-                            break;
+            if(selectedUnitPostion != (-1,-1)){
+                if(selectedUnitPostion == pos)
+                {
+                    SetPieceInteractable(pos,false);
+                }else{
+                    spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
+                    if(CardScript.playerHandScript.SelectedCard != null){
+                        var cardToRemove = CardScript.playerHandScript.SelectedCard;
+                        var cardData = cardToRemove.GetComponent<CardScript>().cardType;
+                        var damage = cardData.damage;
+                        
+                        // Iterate backwards to safely remove during iteration
+                        for(int i = vampireUnits.Count - 1; i >= 0; i--){
+                            if(i < vampireUnits.Count && vampireUnits[i] != null && 
+                                vampireUnits[i].GetComponent<UnitBehavior>().position == pos){
+                                vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage);
+                                break;
+                            }
                         }
+                        
+                        CardScript.playerHandScript.currentCards.Remove(cardData);
+                        CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
+                        
+                        Destroy(cardToRemove, 0.5f);
+                        CardScript.playerHandScript.SelectedCard = null;
+
+                        CardScript.playerHandScript.rehandTheHand();
                     }
-                    
-                    CardScript.playerHandScript.currentCards.Remove(cardData);
-                    CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
-                    
-                    Destroy(cardToRemove, 0.5f);
-                    CardScript.playerHandScript.SelectedCard = null;
+                    Debug.Log(pos);
                 }
-                Debug.Log(pos);
+                UpdatePeiceInteractability();
+            }else{
+                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
+                selectedUnitPostion = pos;
+                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(1);
+                UpdatePeiceInteractability();
             }
-            UpdatePeiceInteractability();
         }
         else if (selectedUnitPostion == (-1, -1))
         {

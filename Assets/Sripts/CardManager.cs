@@ -53,6 +53,8 @@ public class CardData
     /// Ranged damage for units.
     /// </summary>
     public double rangedDamage;
+
+    public string description;
 }
 
 /// <summary>

@@ -3,5 +3,6 @@
     "defense": 8.0,
     "name": "vines",
     "type": "card",
-    "range": "self"
+    "range": "self",
+    "description": "A card that summons vines to defend the unit."
 }

@@ -98,8 +98,13 @@ public class UnitBehavior : MonoBehaviour
     }
 
     public bool damageThisUnit(double damage)
-    {
-        unitdata.maxHealth -= damage;
+    {   
+        double damagePostDefense = damage - unitdata.defense;
+        if(damagePostDefense < 0){
+            unitdata.defense = damagePostDefense * -1;
+        }else{
+            unitdata.maxHealth -= damagePostDefense;
+        }
         if (unitdata.maxHealth <= 0)
         {
             Board.boardScript.removeUnit(this.gameObject);
