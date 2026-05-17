@@ -39,7 +39,8 @@ public class InfoTileScript : MonoBehaviour
                 unitDescription.text += "damage:" + info.damage + "\n";
                 if (info.defense > 0)
                     unitDescription.text += "defense:" + info.defense + "\n";
-                unitDescription.text += "range:" + info.range;
+                unitDescription.text += "range:" + info.range +"\n";
+                unitDescription.text += "Description: \n" + info.description;
             }
             animator.SetBool("InfoIn", true);
 

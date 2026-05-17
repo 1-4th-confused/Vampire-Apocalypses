@@ -25,7 +25,7 @@ public class CardScript : MonoBehaviour
     /// Index of this card in the hand.
     /// </summary>
     public int index;
-
+    
     /// <summary>
     /// Reference to the player's hand script.
     /// </summary>

@@ -3,5 +3,6 @@
     "defense": 60.0,
     "name": "shrimp",
     "type": "card",
-    "range": "ranged"
+    "range": "ranged",
+    "description": "A small but fierce shrimp with high damage, who makes a splash."
 }

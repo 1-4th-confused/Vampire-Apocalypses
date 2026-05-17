@@ -3,5 +3,6 @@
     "defense": 0.0,
     "name": "bloodBolt",
     "type": "card",
-    "range": "ranged"
+    "range": "ranged",
+    "description": "A powerful spell that deals damage to a single target."
 }

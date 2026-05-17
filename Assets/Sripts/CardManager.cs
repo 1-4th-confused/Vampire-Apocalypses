@@ -15,6 +15,7 @@ public class CardData
     /// </summary>
     public string type;
     public string range;
+    public double maxHealth;
 
     /// <summary>
     /// Sprite image for the card/unit.
@@ -52,6 +53,8 @@ public class CardData
     /// Ranged damage for units.
     /// </summary>
     public double rangedDamage;
+
+    public string description;
 }
 
 /// <summary>

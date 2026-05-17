@@ -3,5 +3,6 @@
     "defense": 5.0,
     "name": "defend",
     "type": "card",
-    "range": "melee"
+    "range": "self",
+    "description": "A defensive card that increases the unit's defense."
 }

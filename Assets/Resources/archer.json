@@ -3,5 +3,6 @@
     "defense": 0.0,
     "name": "archer",
     "type": "card",
-    "range": "ranged"
+    "range": "ranged",
+    "description": "A skilled archer with high ranged damage."
 }

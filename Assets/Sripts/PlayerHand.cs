@@ -18,7 +18,7 @@ public class PlayerHand : MonoBehaviour
     /// <summary>
     /// List of current card game objects in the hand.
     /// </summary>
-    private List<GameObject> currentCardObjs;
+    public List<GameObject> currentCardObjs;
 
     /// <summary>
     /// List of current card data in the hand.
@@ -253,6 +253,28 @@ public class PlayerHand : MonoBehaviour
             if (handAnimator != null)
                 handAnimator.SetBool("cardsDown", false);
             cardsMovedDown = false;
+        }
+    }
+
+    public void rehandTheHand()
+    {
+        for(int i = 0; i < currentCardObjs.Count; i++)
+        {
+            currentCardObjs[i].GetComponent<CardScript>().index = i;
+            currentCardObjs[i].GetComponent<CardScript>().MoveCard(handParent.transform.position + new Vector3(
+                (float)(
+                    (0.5 + i - (currentCards.Count) / 2.0f) * cardSpacing
+                ),
+                (float)(
+                    maxcarddepth
+                    *
+                    (2f * (0.5f + i - (currentCards.Count) / 2.0f) / (currentCards.Count))
+                    *
+                    (2f * (0.5f + i - (currentCards.Count) / 2.0f) / (currentCards.Count))
+                ),
+                0f
+            ),
+            new Vector3(0f, 0f, -maxcardRotation * 2f * (0.5f + i - (currentCards.Count) / 2.0f) / (currentCards.Count)));
         }
     }
 }

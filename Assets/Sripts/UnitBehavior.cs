@@ -95,7 +95,22 @@ public class UnitBehavior : MonoBehaviour
     public void Step(int x, int y)
     {
         position = (position.x + x, position.y + y);
+    }
 
+    public bool damageThisUnit(double damage)
+    {   
+        double damagePostDefense = damage - unitdata.defense;
+        if(damagePostDefense < 0){
+            unitdata.defense = damagePostDefense * -1;
+        }else{
+            unitdata.maxHealth -= damagePostDefense;
+        }
+        if (unitdata.maxHealth <= 0)
+        {
+            Board.boardScript.removeUnit(this.gameObject);
+            return true;
+        }
+        return false;
     }
 
 }

@@ -3,5 +3,6 @@
     "defense": 0.0,
     "name": "assassin",
     "type": "card",
-    "range": "melee"
+    "range": "melee",
+    "description": "A swift and deadly assassin with high melee damage."
 }
