@@ -164,6 +164,7 @@ public class CardScript : MonoBehaviour
     {
         cardAnimator.SetBool("hovering", true);
         this.gameObject.transform.SetAsLastSibling();
+        InfoTileScript.infoTileScript.MoveOut(cardType);
     }
 
     /// <summary>
@@ -172,5 +173,6 @@ public class CardScript : MonoBehaviour
     public void OnPointerExit()
     {
         cardAnimator.SetBool("hovering", false);
+        InfoTileScript.infoTileScript.MoveIn(cardType);
     }
 }

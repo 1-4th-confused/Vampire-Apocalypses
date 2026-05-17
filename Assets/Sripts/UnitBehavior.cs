@@ -47,28 +47,30 @@ public class UnitBehavior : MonoBehaviour
     {
         imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;
         updatePosition();
-
     }
     void Update()
     {
         if (moved)
         {
-            double timeAlongPathNormalized = 6*(Time.realtimeSinceStartupAsDouble-timeMoved);
+            double timeAlongPathNormalized = 6 * (Time.realtimeSinceStartupAsDouble - timeMoved);
             timeAlongPathNormalized = System.Math.Pow(timeAlongPathNormalized, 1.0 / 3.0) * (2.0 / 3.0) + timeAlongPathNormalized * (1.0 / 3.0);
-            if (timeAlongPathNormalized > 1) {
+            if (timeAlongPathNormalized > 1)
+            {
                 currentPosition = wantedPosition;
                 this.gameObject.transform.position = wantedPosition;
                 moved = false;
-            } else {
+            }
+            else
+            {
                 this.gameObject.transform.position = new Vector3(
-                    (float) (currentPosition.x + timeAlongPathNormalized*(wantedPosition.x -currentPosition.x)),
-                    (float) (currentPosition.y + timeAlongPathNormalized*(wantedPosition.y -currentPosition.y)),
-                    (float) (currentPosition.z + timeAlongPathNormalized*(wantedPosition.z -currentPosition.z))
+                    (float)(currentPosition.x + timeAlongPathNormalized * (wantedPosition.x - currentPosition.x)),
+                    (float)(currentPosition.y + timeAlongPathNormalized * (wantedPosition.y - currentPosition.y)),
+                    (float)(currentPosition.z + timeAlongPathNormalized * (wantedPosition.z - currentPosition.z))
                 );
             }
         }
-        
-            
+
+
     }
 
     public void updatePosition((int x, int y) pos)

@@ -86,9 +86,9 @@ public class PlayerHand : MonoBehaviour
         currentCards = new List<CardData>();
         currentCards.Add((CardData)CardManager.cardTypes[0]);
         currentCards.Add((CardData)CardManager.cardTypes[1]);
-        currentCards.Add((CardData)CardManager.cardTypes[0]);
-        currentCards.Add((CardData)CardManager.cardTypes[1]);
-        currentCards.Add((CardData)CardManager.cardTypes[0]);
+        currentCards.Add((CardData)CardManager.cardTypes[2]);
+        currentCards.Add((CardData)CardManager.cardTypes[3]);
+        currentCards.Add((CardData)CardManager.cardTypes[4]);
         CreateHand();
     }
 
@@ -98,11 +98,13 @@ public class PlayerHand : MonoBehaviour
     void Update()
     {
         HandleCardsMoveingDown();
-        if(SelectedCard != null){
+        if (SelectedCard != null)
+        {
             Board.boardScript.UpdatePeiceInteractability();
         }
     }
-    public void placeCard(){
+    public void placeCard()
+    {
     }
 
     /// <summary>
@@ -244,13 +246,13 @@ public class PlayerHand : MonoBehaviour
         {
             if (handAnimator != null)
                 handAnimator.SetBool("cardsDown", true);
-                cardsMovedDown = true;
+            cardsMovedDown = true;
         }
         else if (Mouse.current.position.ReadValue().y / Screen.height < threasholdForCardsToMoveUp && cardsMovedDown)
         {
             if (handAnimator != null)
                 handAnimator.SetBool("cardsDown", false);
-                cardsMovedDown = false;
+            cardsMovedDown = false;
         }
     }
 }
