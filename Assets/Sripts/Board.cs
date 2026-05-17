@@ -145,6 +145,14 @@ public class Board : MonoBehaviour
         }
         StartCoroutine(CreateDeckInSequence());
     }
+    void SpawnEnemy(CardData unitType, (int x, int y) pos)
+    {
+        tempUnit = Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent);
+
+        units.Add();
+        units[2].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[0]);
+        units[2].GetComponent<UnitBehavior>().position = (1, 3);
+    }
 
     /// <summary>
     /// Coroutine to instantiate deck cards sequentially with delays.
