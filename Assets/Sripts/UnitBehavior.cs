@@ -45,6 +45,7 @@ public class UnitBehavior : MonoBehaviour
     public GameObject defenseBar;
     public GameObject HealthBar;
     public bool hasActed = false;
+    public float quedDamage = 0;
     public (int x, int y)[] selectedPositions = new (int x, int y)[0];
 
     /// <summary>

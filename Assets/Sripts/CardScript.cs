@@ -25,7 +25,7 @@ public class CardScript : MonoBehaviour
     /// Index of this card in the hand.
     /// </summary>
     public int index;
-    
+
     /// <summary>
     /// Reference to the player's hand script.
     /// </summary>
@@ -154,7 +154,7 @@ public class CardScript : MonoBehaviour
     public void click()
     {
         playerHandScript.ClickCard(index);
-        Board.boardScript.UpdatePeiceInteractability();
+        Board.boardScript.UpdatePieceInteractability();
     }
 
     /// <summary>

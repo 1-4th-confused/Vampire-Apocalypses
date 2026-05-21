@@ -100,7 +100,7 @@ public class PlayerHand : MonoBehaviour
         HandleCardsMoveingDown();
         if (SelectedCard != null)
         {
-            Board.boardScript.UpdatePeiceInteractability();
+            Board.boardScript.UpdatePieceInteractability();
         }
     }
     public void placeCard()
@@ -258,7 +258,7 @@ public class PlayerHand : MonoBehaviour
 
     public void rehandTheHand()
     {
-        for(int i = 0; i < currentCardObjs.Count; i++)
+        for (int i = 0; i < currentCardObjs.Count; i++)
         {
             currentCardObjs[i].GetComponent<CardScript>().index = i;
             currentCardObjs[i].GetComponent<CardScript>().MoveCard(handParent.transform.position + new Vector3(

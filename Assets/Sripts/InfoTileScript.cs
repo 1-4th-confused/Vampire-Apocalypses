@@ -36,6 +36,7 @@ public class InfoTileScript : MonoBehaviour
                 unitDescription.text += "range:" + info.range + "\n";
                 unitDescription.text += "Description: \n" + info.description;
             }
+            Debug.Log("InfoIn");
             animator.SetBool("InfoIn", true);
 
         }
@@ -49,7 +50,8 @@ public class InfoTileScript : MonoBehaviour
     {
         if (infoToDisplay == info)
         {
-            isOut = true;
+            isOut = false;
+            animator.SetBool("InfoIn", false);
             info = nullData;
             if (quedInfo != nullData)
             {

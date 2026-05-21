@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Net.Http.Headers;
 using System.Collections;
 using System.IO;
+using System.Data;
 
 /// <summary>
 /// Manages the game board, including unit placement, tile interaction, and deck management.
@@ -142,7 +143,7 @@ public class Board : MonoBehaviour
 
         textTurnNumber.text = "" + turnNumber;
 
-        UpdatePeiceInteractability();
+        UpdatePieceInteractability();
     }
 
     /// <summary>
@@ -223,7 +224,7 @@ public class Board : MonoBehaviour
     /// <summary>
     /// Updates the interactability of board tiles based on unit selection and movement.
     /// </summary>
-    public void UpdatePeiceInteractability()
+    public void UpdatePieceInteractability()
     {
         string cardName;
         if (CardScript.playerHandScript.SelectedCard != null)
@@ -304,6 +305,21 @@ public class Board : MonoBehaviour
             spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
             SelectSelfUnitForCardApplication();
         }
+
+        for (int i = 0; i < vampireUnits.Count; i++)
+        {
+            for (int j = 0; j < vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length; j++)
+                if (
+                    vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j].x >= 0 &&
+                    vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j].x < 7 &&
+                    vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j].y >= 0 &&
+                    vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j].y < 5
+                )
+                    spawnedPieces[
+                        vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j].x,
+                        vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j].y
+                    ].GetComponent<BoardButtonsScript>().setSelected(4);
+        }
     }
 
     /// <summary>
@@ -379,14 +395,14 @@ public class Board : MonoBehaviour
                     break;
                 }
             }
-            UpdatePeiceInteractability();
+            UpdatePieceInteractability();
         }
         else if (selectedUnitPostion == pos)
         {
             clearInterabilityMatrix();
             spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
             selectedUnitPostion = (-1, -1);
-            UpdatePeiceInteractability();
+            UpdatePieceInteractability();
         }
         else if (CardScript.playerHandScript.SelectedCard != null)
         {
@@ -419,14 +435,14 @@ public class Board : MonoBehaviour
                     CardScript.playerHandScript.rehandTheHand();
                 }
 
-                UpdatePeiceInteractability();
+                UpdatePieceInteractability();
             }
             else
             {
                 spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
                 selectedUnitPostion = pos;
                 spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(1);
-                UpdatePeiceInteractability();
+                UpdatePieceInteractability();
             }
         }
         else if (selectedUnitPostion == (-1, -1))
@@ -435,7 +451,7 @@ public class Board : MonoBehaviour
             spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
             selectedUnitPostion = pos;
             spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(1);
-            UpdatePeiceInteractability();
+            UpdatePieceInteractability();
         }
         else
         {
@@ -450,7 +466,7 @@ public class Board : MonoBehaviour
             }
             spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(0);
             selectedUnitPostion = (-1, -1);
-            UpdatePeiceInteractability();
+            UpdatePieceInteractability();
         }
     }
 
@@ -507,6 +523,10 @@ public class Board : MonoBehaviour
     public void BeginTurn()
     {
         IterateVampAI();
+        for (int i = 0; i < vampireUnits.Count; i++)
+        {
+            vampireUnits[i].GetComponent<UnitBehavior>().hasActed = false;
+        }
 
     }
     public void IterateVampAI()
@@ -515,9 +535,123 @@ public class Board : MonoBehaviour
         {
             if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed && vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length == 0)
             {
-                Debug.Log("hit");
+                //looking for units to select
+                for (int j = 0; j < units.Count; j++)
+                {
+                    if (Mathf.Abs(units[j].GetComponent<UnitBehavior>().position.x - vampireUnits[i].GetComponent<UnitBehavior>().position.x) <= 1 && Mathf.Abs(units[j].GetComponent<UnitBehavior>().position.y - vampireUnits[i].GetComponent<UnitBehavior>().position.y) <= 1)
+                    {
+                        (int x, int y)[] temp = {
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x + 1, vampireUnits[i].GetComponent<UnitBehavior>().position.y + 1),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x + 1, vampireUnits[i].GetComponent<UnitBehavior>().position.y),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x + 1, vampireUnits[i].GetComponent<UnitBehavior>().position.y - 1),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x, vampireUnits[i].GetComponent<UnitBehavior>().position.y + 1),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x, vampireUnits[i].GetComponent<UnitBehavior>().position.y - 1),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x - 1, vampireUnits[i].GetComponent<UnitBehavior>().position.y + 1),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x - 1, vampireUnits[i].GetComponent<UnitBehavior>().position.y),
+                            (vampireUnits[i].GetComponent<UnitBehavior>().position.x - 1, vampireUnits[i].GetComponent<UnitBehavior>().position.y - 1)
+                        };
+                        vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions = temp;
+                        vampireUnits[i].GetComponent<UnitBehavior>().quedDamage = 5;
+                        vampireUnits[i].GetComponent<UnitBehavior>().hasActed = true;
+                    }
+                }
+            }
+            else if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed)
+            {
+                for (int j = 0; j < vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length; j++)
+                {
+                    for (int h = 0; h < units.Count; h++)
+                    {
+                        if (units[h].GetComponent<UnitBehavior>().position == vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j])
+                        {
+                            units[h].GetComponent<UnitBehavior>().damageThisUnit(vampireUnits[i].GetComponent<UnitBehavior>().quedDamage);
+                            vampireUnits[i].GetComponent<UnitBehavior>().quedDamage = 0;
+
+                        }
+                    }
+                }
+                vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions = new (int x, int y)[0];
+                vampireUnits[i].GetComponent<UnitBehavior>().hasActed = true;
+            }
+            if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed)
+            {
+                Debug.Log("tiniHit");
+                GameObject closestUnit = null;
+                for (int j = 0; j < units.Count; j++)
+                {
+                    if (
+                        closestUnit == null
+                        ||
+                        (
+                            Mathf.Abs(units[j].GetComponent<UnitBehavior>().position.x - vampireUnits[i].GetComponent<UnitBehavior>().position.x)
+                            + Mathf.Abs(units[j].GetComponent<UnitBehavior>().position.y - vampireUnits[i].GetComponent<UnitBehavior>().position.y)
+                            <
+                            Mathf.Abs(closestUnit.GetComponent<UnitBehavior>().position.x - vampireUnits[i].GetComponent<UnitBehavior>().position.x)
+                            + Mathf.Abs(closestUnit.GetComponent<UnitBehavior>().position.y - vampireUnits[i].GetComponent<UnitBehavior>().position.y)
+                        )
+                        )
+                    {
+                        closestUnit = units[j];
+                    }
+                }
+                if (closestUnit != null)
+                {
+
+                    Debug.Log("closestUnitPos:(" + closestUnit.GetComponent<UnitBehavior>().position.x + "," + closestUnit.GetComponent<UnitBehavior>().position.y + ")");
+                    if (
+                        Mathf.Abs(closestUnit.GetComponent<UnitBehavior>().position.y - vampireUnits[i].GetComponent<UnitBehavior>().position.y)
+                        > Mathf.Abs(closestUnit.GetComponent<UnitBehavior>().position.x - vampireUnits[i].GetComponent<UnitBehavior>().position.x)
+                    )
+                    {
+                        if (closestUnit.GetComponent<UnitBehavior>().position.y > vampireUnits[i].GetComponent<UnitBehavior>().position.y)
+                        {
+                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
+                                (
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.x,
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.y + 1
+                                )
+                            );
+                            Debug.Log("hit");
+                        }
+                        else
+                        {
+                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
+                                (
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.x,
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.y - 1
+                                )
+                            );
+                            Debug.Log("hit");
+                        }
+                    }
+                    else
+                    {
+                        if (closestUnit.GetComponent<UnitBehavior>().position.x > vampireUnits[i].GetComponent<UnitBehavior>().position.x)
+                        {
+                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
+                                (
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.x + 1,
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.y
+                                )
+                            );
+                            Debug.Log("hit");
+                        }
+                        else
+                        {
+                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
+                                (
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.x - 1,
+                                    vampireUnits[i].GetComponent<UnitBehavior>().position.y
+                                )
+                            );
+                            Debug.Log("hit");
+                        }
+                    }
+                }
             }
         }
+
+        UpdatePieceInteractability();
     }
 
     public void clearInterabilityMatrix()
@@ -684,11 +818,11 @@ public class Board : MonoBehaviour
     public void HoveringTileAttack((int x, int y) pos)
     {
         hoveredTile = pos;
-        UpdatePeiceInteractability();
+        UpdatePieceInteractability();
     }
     public void UnHoveringTileAttack((int x, int y) pos)
     {
         hoveredTile = (-1, -1);
-        UpdatePeiceInteractability();
+        UpdatePieceInteractability();
     }
 }
