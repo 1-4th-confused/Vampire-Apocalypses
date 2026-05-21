@@ -1,4 +1,6 @@
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Handles the behavior and movement of units on the game board.
@@ -19,6 +21,7 @@ public class UnitBehavior : MonoBehaviour
     /// GameObject containing the unit's image.
     /// </summary>
     public GameObject imageObj;
+    public GameObject sheildObj;
 
     /// <summary>
     /// Time when the unit started moving.
@@ -47,6 +50,9 @@ public class UnitBehavior : MonoBehaviour
     public bool hasActed = false;
     public float quedDamage = 0;
     public (int x, int y)[] selectedPositions = new (int x, int y)[0];
+    public Text HealthNumber;
+    public Animator unitAnimator;
+    public Image UnitImage;
 
     /// <summary>
     /// Initializes the unit's image and position.
@@ -54,6 +60,7 @@ public class UnitBehavior : MonoBehaviour
     void Start()
     {
         imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;
+        sheildObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;
         updatePosition();
         health = unitdata.maxHealth;
         DisplayDamage();
@@ -79,11 +86,6 @@ public class UnitBehavior : MonoBehaviour
                 );
             }
         }
-        if (health != unitdata.maxHealth)
-        {
-            Debug.Log(health + "/" + unitdata.maxHealth);
-        }
-
     }
 
     public void updatePosition((int x, int y) pos)
@@ -122,6 +124,7 @@ public class UnitBehavior : MonoBehaviour
         if (health <= 0)
         {
             Board.boardScript.removeUnit(this.gameObject);
+            Board.boardScript.CheckIfUnitsAllDead();
             return true;
         }
         DisplayDamage();
@@ -129,11 +132,35 @@ public class UnitBehavior : MonoBehaviour
     }
     public void defendThisUnit(double defense)
     {
+
         this.defense += (float)defense;
         DisplayDamage();
     }
+    public void SetHasActed(bool hasActed)
+    {
+        this.hasActed = hasActed;
+        if (hasActed)
+        {
+            UnitImage.color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+        else
+        {
+            UnitImage.color = new Color(1, 1, 1, 1);
+        }
+    }
     public void DisplayDamage()
     {
+        if (defense > 0)
+        {
+            unitAnimator.SetBool("Sheild", true);
+            HealthNumber.text = "<color=#549eb6>" + defense + "+</color>" + health + "/" + unitdata.maxHealth;
+        }
+        else
+        {
+            unitAnimator.SetBool("Sheild", false);
+            HealthNumber.text = health + "/" + unitdata.maxHealth;
+        }
+
         defenseBar.transform.localScale = new Vector3(defense / unitdata.maxHealth, 1f, 1f);
         defenseBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (defense / unitdata.maxHealth)), defenseBar.transform.position.y, defenseBar.transform.position.z);
         HealthBar.transform.localScale = new Vector3(health / unitdata.maxHealth, 1f, 1f);

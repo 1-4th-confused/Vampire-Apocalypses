@@ -36,7 +36,6 @@ public class InfoTileScript : MonoBehaviour
                 unitDescription.text += "range:" + info.range + "\n";
                 unitDescription.text += "Description: \n" + info.description;
             }
-            Debug.Log("InfoIn");
             animator.SetBool("InfoIn", true);
 
         }

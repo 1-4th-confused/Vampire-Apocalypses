@@ -2525,6 +2525,9 @@ MonoBehaviour:
   hourglassAnimator: {fileID: 1083485985}
   turnNumber: 0
   textTurnNumber: {fileID: 1132605117}
+  endPanelObject: {fileID: 7425100691270800128, guid: aa8ef65b83e19a54d82c584e1ce3da47, type: 3}
+  endPanelCanvas: {fileID: 392140209}
+  score: 0
 --- !u!223 &1670938522
 Canvas:
   m_ObjectHideFlags: 0

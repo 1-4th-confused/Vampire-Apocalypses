@@ -84,11 +84,9 @@ public class PlayerHand : MonoBehaviour
         CardManager.ReadCardJSON();
         currentCardObjs = new List<GameObject>();
         currentCards = new List<CardData>();
-        currentCards.Add((CardData)CardManager.cardTypes[0]);
-        currentCards.Add((CardData)CardManager.cardTypes[1]);
-        currentCards.Add((CardData)CardManager.cardTypes[2]);
-        currentCards.Add((CardData)CardManager.cardTypes[3]);
-        currentCards.Add((CardData)CardManager.cardTypes[4]);
+        // currentCards.Add((CardData)CardManager.cardTypes[0]);
+        // currentCards.Add((CardData)CardManager.cardTypes[1]);
+        // currentCards.Add((CardData)CardManager.cardTypes[3]);
         CreateHand();
     }
 
