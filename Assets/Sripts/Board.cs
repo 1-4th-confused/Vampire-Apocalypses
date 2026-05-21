@@ -97,6 +97,7 @@ public class Board : MonoBehaviour
     public GameObject endPanelCanvas;
     private bool createdEndPanel = false;
     public int score = 0;
+    public float timer = -1f;
 
     /// <summary>
     /// Initializes the board, units, tiles, and deck.
@@ -107,14 +108,14 @@ public class Board : MonoBehaviour
 
         CardManager.ReadUnitsJSON();
         // Temporary unit initialization
-        for (int i = 0; i < CardManager.unitTypes.Count; i++)
-        {
-            Debug.Log("unit:" + ((CardData)CardManager.unitTypes[i]).name + " : " + i);
-        }
-        for (int i = 0; i < CardManager.cardTypes.Count; i++)
-        {
-            Debug.Log("card:" + ((CardData)CardManager.cardTypes[i]).name + " : " + i);
-        }
+        // for (int i = 0; i < CardManager.unitTypes.Count; i++)
+        // {
+        //     Debug.Log("unit:" + ((CardData)CardManager.unitTypes[i]).name + " : " + i);
+        // }
+        // for (int i = 0; i < CardManager.cardTypes.Count; i++)
+        // {
+        //     Debug.Log("card:" + ((CardData)CardManager.cardTypes[i]).name + " : " + i);
+        // }
 
         //pidgion : 4
         //soldier : 7
@@ -152,12 +153,12 @@ public class Board : MonoBehaviour
         deckData.Add((CardData)CardManager.cardTypes[3]);//defend
         deckData.Add((CardData)CardManager.cardTypes[3]);//defend
         deckData.Add((CardData)CardManager.cardTypes[3]);//defend
-        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
         deckData.Add((CardData)CardManager.cardTypes[0]);//archer
         deckData.Add((CardData)CardManager.cardTypes[0]);//archer
         deckData.Add((CardData)CardManager.cardTypes[0]);//archer
@@ -517,6 +518,7 @@ public class Board : MonoBehaviour
     // ...existing code...
     public void ClickDeck()
     {
+        Debug.Log("deckDataRemaining"+deckDataRemaining.Count);
         if (CardScript.playerHandScript.currentCards.Count < 5)
         {
             deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
@@ -585,6 +587,38 @@ public class Board : MonoBehaviour
             units[i].GetComponent<UnitBehavior>().SetHasActed(false);
         }
 
+    }
+    public void Update()
+    {
+        if (timer == -1f)
+        {
+            timer = Time.time;
+        }
+        Debug.Log(timer + 5 < Time.time);
+        Debug.Log("deckDataRemaining"+deckDataRemaining.Count);
+        if (deckDataRemaining.Count == 0 && CardScript.playerHandScript.currentCards != null && timer + 5 < Time.time)
+        {
+            deckDataRemaining = new List<CardData>();
+            foreach (CardData data in deckData)
+            {
+                // bool found = false;
+                // for (int i = 0; i < CardScript.playerHandScript.currentCards.Count; i++)
+                // {
+                //     if (data == CardScript.playerHandScript.currentCards[i])
+                //     {
+                //         found = true;
+                //         break;
+                //     }
+                // }
+                // if (found == false)
+                // {
+                    deckDataRemaining.Add(data);
+                // }
+                
+            }
+            timer = Time.time;
+            CreateDeck();
+        }
     }
     public void IterateVampAI()
     {
@@ -731,7 +765,6 @@ public class Board : MonoBehaviour
 
     public void SelectMeleeUnitForCardApplication()
     {
-        Debug.Log(selectedUnitPostion);
         if (selectedUnitPostion != (-1, -1))
         {
             for (int i = -1; i <= 1; i++)
