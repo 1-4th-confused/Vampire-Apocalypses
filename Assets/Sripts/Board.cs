@@ -153,12 +153,12 @@ public class Board : MonoBehaviour
         deckData.Add((CardData)CardManager.cardTypes[3]);//defend
         deckData.Add((CardData)CardManager.cardTypes[3]);//defend
         deckData.Add((CardData)CardManager.cardTypes[3]);//defend
-        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
-        // deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
+        deckData.Add((CardData)CardManager.cardTypes[1]);//assassin
         deckData.Add((CardData)CardManager.cardTypes[0]);//archer
         deckData.Add((CardData)CardManager.cardTypes[0]);//archer
         deckData.Add((CardData)CardManager.cardTypes[0]);//archer
