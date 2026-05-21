@@ -61,7 +61,6 @@ public class BoardButtonsScript : MonoBehaviour
         if (isAttackPosibility && !isSelected)
         {
             Board.boardScript.HoveringTileAttack(position);
-            Debug.Log("OnPointerEnter");
         }
     }
 
@@ -73,7 +72,6 @@ public class BoardButtonsScript : MonoBehaviour
         if (!isSelected)
         {
             Board.boardScript.UnHoveringTileAttack(position);
-            Debug.Log("OnPointerExit");
         }
     }
 }

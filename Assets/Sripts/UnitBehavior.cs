@@ -40,6 +40,13 @@ public class UnitBehavior : MonoBehaviour
     /// </summary>
     public Vector3 wantedPosition;
 
+    public float health;
+    public float defense;
+    public GameObject defenseBar;
+    public GameObject HealthBar;
+    public bool hasActed = false;
+    public (int x, int y)[] selectedPositions = new (int x, int y)[0];
+
     /// <summary>
     /// Initializes the unit's image and position.
     /// </summary>
@@ -47,6 +54,8 @@ public class UnitBehavior : MonoBehaviour
     {
         imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;
         updatePosition();
+        health = unitdata.maxHealth;
+        DisplayDamage();
     }
     void Update()
     {
@@ -69,7 +78,10 @@ public class UnitBehavior : MonoBehaviour
                 );
             }
         }
-
+        if (health != unitdata.maxHealth)
+        {
+            Debug.Log(health + "/" + unitdata.maxHealth);
+        }
 
     }
 
@@ -98,19 +110,33 @@ public class UnitBehavior : MonoBehaviour
     }
 
     public bool damageThisUnit(double damage)
-    {   
-        double damagePostDefense = damage - unitdata.defense;
-        if(damagePostDefense < 0){
-            unitdata.defense = damagePostDefense * -1;
-        }else{
-            unitdata.maxHealth -= damagePostDefense;
+    {
+
+        defense -= (float)(damage);
+        if (defense < 0)
+        {
+            health += defense;
+            defense = 0;
         }
-        if (unitdata.maxHealth <= 0)
+        if (health <= 0)
         {
             Board.boardScript.removeUnit(this.gameObject);
             return true;
         }
+        DisplayDamage();
         return false;
+    }
+    public void defendThisUnit(double defense)
+    {
+        this.defense += (float)defense;
+        DisplayDamage();
+    }
+    public void DisplayDamage()
+    {
+        defenseBar.transform.localScale = new Vector3(defense / unitdata.maxHealth, 1f, 1f);
+        defenseBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (defense / unitdata.maxHealth)), defenseBar.transform.position.y, defenseBar.transform.position.z);
+        HealthBar.transform.localScale = new Vector3(health / unitdata.maxHealth, 1f, 1f);
+        HealthBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (health / unitdata.maxHealth)), HealthBar.transform.position.y, HealthBar.transform.position.z);
     }
 
 }

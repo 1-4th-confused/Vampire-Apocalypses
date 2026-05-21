@@ -15,7 +15,7 @@ public class CardData
     /// </summary>
     public string type;
     public string range;
-    public double maxHealth;
+    public float maxHealth;
 
     /// <summary>
     /// Sprite image for the card/unit.
@@ -82,16 +82,17 @@ public class CardManager : MonoBehaviour
         foreach (string file in cardJsons)
         {
             string name = file;
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor){
-                name = file.Substring(file.IndexOf(@"\")+1);
-                name = name.Substring(name.IndexOf(@"\")+1);
-                name = name.Substring(0,name.IndexOf(@"."));
-            } 
+            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+            {
+                name = file.Substring(file.IndexOf(@"\") + 1);
+                name = name.Substring(name.IndexOf(@"\") + 1);
+                name = name.Substring(0, name.IndexOf(@"."));
+            }
             else
             {
-                name = file.Substring(file.IndexOf(@"/")+1);
-                name = name.Substring(name.IndexOf(@"/")+1);
-                name = name.Substring(0,name.IndexOf(@"."));
+                name = file.Substring(file.IndexOf(@"/") + 1);
+                name = name.Substring(name.IndexOf(@"/") + 1);
+                name = name.Substring(0, name.IndexOf(@"."));
             }
             CardData cardDataTemp = JsonUtility.FromJson<CardData>(Resources.Load<TextAsset>(name).ToString());
             if (cardDataTemp.type == "card")
@@ -112,16 +113,17 @@ public class CardManager : MonoBehaviour
         foreach (string file in cardJsons)
         {
             string name = file;
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor){
-                name = file.Substring(file.IndexOf(@"\")+1);
-                name = name.Substring(name.IndexOf(@"\")+1);
-                name = name.Substring(0,name.IndexOf(@"."));
+            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+            {
+                name = file.Substring(file.IndexOf(@"\") + 1);
+                name = name.Substring(name.IndexOf(@"\") + 1);
+                name = name.Substring(0, name.IndexOf(@"."));
             }
             else
             {
-                name = file.Substring(file.IndexOf(@"/")+1);
-                name = name.Substring(name.IndexOf(@"/")+1);
-                name = name.Substring(0,name.IndexOf(@"."));
+                name = file.Substring(file.IndexOf(@"/") + 1);
+                name = name.Substring(name.IndexOf(@"/") + 1);
+                name = name.Substring(0, name.IndexOf(@"."));
             }
             CardData unitDataTemp = JsonUtility.FromJson<CardData>(Resources.Load<TextAsset>(name).ToString());
             if (unitDataTemp.type == "unit")

@@ -356,7 +356,32 @@ public class Board : MonoBehaviour
     /// <param name="pos">The clicked tile position.</param>
     public void ClickTile((int x, int y) pos)
     {
-        if (selectedUnitPostion == pos)
+        if (CardScript.playerHandScript.SelectedCard != null && CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.name == "defend")
+        {
+            // Iterate backwards to safely remove during iteration
+            for (int i = 0; i < units.Count; i++)
+            {
+                if (units[i].GetComponent<UnitBehavior>().position == pos)
+                {
+                    Debug.Log(CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.defense);
+
+                    units[i].GetComponent<UnitBehavior>().defendThisUnit(CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.defense);
+                    GameObject cardToRemove = CardScript.playerHandScript.SelectedCard;
+                    CardData cardData = cardToRemove.GetComponent<CardScript>().cardType;
+
+                    CardScript.playerHandScript.currentCards.Remove(cardData);
+                    CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
+
+                    Destroy(cardToRemove, 0.5f);
+                    CardScript.playerHandScript.SelectedCard = null;
+
+                    CardScript.playerHandScript.rehandTheHand();
+                    break;
+                }
+            }
+            UpdatePeiceInteractability();
+        }
+        else if (selectedUnitPostion == pos)
         {
             clearInterabilityMatrix();
             spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
@@ -367,8 +392,6 @@ public class Board : MonoBehaviour
         {
             if (selectedUnitPostion != (-1, -1))
             {
-
-
                 spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
                 if (CardScript.playerHandScript.SelectedCard != null)
                 {
@@ -395,7 +418,6 @@ public class Board : MonoBehaviour
 
                     CardScript.playerHandScript.rehandTheHand();
                 }
-                Debug.Log(pos);
 
                 UpdatePeiceInteractability();
             }
@@ -478,7 +500,23 @@ public class Board : MonoBehaviour
         {
             hourglassAnimator.SetTrigger("spin");
             turnNumber++;
+            BeginTurn();
             textTurnNumber.text = "" + turnNumber;
+        }
+    }
+    public void BeginTurn()
+    {
+        IterateVampAI();
+
+    }
+    public void IterateVampAI()
+    {
+        for (int i = 0; i < vampireUnits.Count; i++)
+        {
+            if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed && vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length == 0)
+            {
+                Debug.Log("hit");
+            }
         }
     }
 

@@ -19,15 +19,9 @@ public class InfoTileScript : MonoBehaviour
         quedInfo = nullData;
         infoTileScript = this;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Debug.Log(info == nullData);
-    }
     public void MoveOut(CardData infoToDisplay)
     {
-        Debug.Log(info);
+
         if (info == nullData)
         {
             isOut = true;
@@ -39,7 +33,7 @@ public class InfoTileScript : MonoBehaviour
                 unitDescription.text += "damage:" + info.damage + "\n";
                 if (info.defense > 0)
                     unitDescription.text += "defense:" + info.defense + "\n";
-                unitDescription.text += "range:" + info.range +"\n";
+                unitDescription.text += "range:" + info.range + "\n";
                 unitDescription.text += "Description: \n" + info.description;
             }
             animator.SetBool("InfoIn", true);
@@ -56,12 +50,9 @@ public class InfoTileScript : MonoBehaviour
         if (infoToDisplay == info)
         {
             isOut = true;
-            Debug.Log("SetInfo to:" + infoToDisplay);
             info = nullData;
-            animator.SetBool("InfoIn", false);
             if (quedInfo != nullData)
             {
-                Debug.Log(quedInfo);
                 MoveOut(quedInfo);
             }
         }
