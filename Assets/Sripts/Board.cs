@@ -90,6 +90,7 @@ public class Board : MonoBehaviour
     public Animator hourglassAnimator;
     public int turnNumber;
     public Text textTurnNumber;
+    public (int x, int y) hoveredTile = (-1, -1);
 
     /// <summary>
     /// Initializes the board, units, tiles, and deck.
@@ -224,12 +225,15 @@ public class Board : MonoBehaviour
     /// </summary>
     public void UpdatePeiceInteractability()
     {
+        string cardName;
         if (CardScript.playerHandScript.SelectedCard != null)
         {
+            cardName = CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.name;
             cardSpecification = CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.range;
         }
         else
         {
+            cardName = null;
             cardSpecification = null;
         }
         if (selectedUnitPostion == (-1, -1) && CardScript.playerHandScript.SelectedCard == null)
@@ -278,6 +282,11 @@ public class Board : MonoBehaviour
             {
                 SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position, true);
             }
+        }
+        else if (cardName == "bloodBolt")
+        {
+            clearInterabilityMatrix();
+            SelectBloodBoltForCardApplication();
         }
         else if (cardSpecification == "melee")
         {
@@ -347,7 +356,7 @@ public class Board : MonoBehaviour
     /// <param name="pos">The clicked tile position.</param>
     public void ClickTile((int x, int y) pos)
     {
-        if (selectedUnitPostion == pos && CardScript.playerHandScript.SelectedCard == null)
+        if (selectedUnitPostion == pos)
         {
             clearInterabilityMatrix();
             spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
@@ -358,40 +367,36 @@ public class Board : MonoBehaviour
         {
             if (selectedUnitPostion != (-1, -1))
             {
-                if (selectedUnitPostion == pos)
+
+
+                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
+                if (CardScript.playerHandScript.SelectedCard != null)
                 {
-                    SetPieceInteractable(pos, false);
-                }
-                else
-                {
-                    spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
-                    if (CardScript.playerHandScript.SelectedCard != null)
+                    var cardToRemove = CardScript.playerHandScript.SelectedCard;
+                    var cardData = cardToRemove.GetComponent<CardScript>().cardType;
+                    var damage = cardData.damage;
+
+                    // Iterate backwards to safely remove during iteration
+                    for (int i = vampireUnits.Count - 1; i >= 0; i--)
                     {
-                        var cardToRemove = CardScript.playerHandScript.SelectedCard;
-                        var cardData = cardToRemove.GetComponent<CardScript>().cardType;
-                        var damage = cardData.damage;
-
-                        // Iterate backwards to safely remove during iteration
-                        for (int i = vampireUnits.Count - 1; i >= 0; i--)
+                        if (i < vampireUnits.Count && vampireUnits[i] != null &&
+                            vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
                         {
-                            if (i < vampireUnits.Count && vampireUnits[i] != null &&
-                                vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
-                            {
-                                vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage);
-                                break;
-                            }
+                            vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage);
+                            break;
                         }
-
-                        CardScript.playerHandScript.currentCards.Remove(cardData);
-                        CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
-
-                        Destroy(cardToRemove, 0.5f);
-                        CardScript.playerHandScript.SelectedCard = null;
-
-                        CardScript.playerHandScript.rehandTheHand();
                     }
-                    Debug.Log(pos);
+
+                    CardScript.playerHandScript.currentCards.Remove(cardData);
+                    CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
+
+                    Destroy(cardToRemove, 0.5f);
+                    CardScript.playerHandScript.SelectedCard = null;
+
+                    CardScript.playerHandScript.rehandTheHand();
                 }
+                Debug.Log(pos);
+
                 UpdatePeiceInteractability();
             }
             else
@@ -484,6 +489,7 @@ public class Board : MonoBehaviour
             for (int j = 0; j < spawnedPieces.GetLength(1); j++)
             { //5
                 spawnedPieces[i, j].GetComponent<BoardButtonsScript>().setSelected(0);
+                spawnedPieces[i, j].GetComponent<BoardButtonsScript>().isAttackPosibility = false;
                 SetPieceInteractable((i, j), false);
             }
         }
@@ -503,7 +509,6 @@ public class Board : MonoBehaviour
 
     public void SelectMeleeUnitForCardApplication()
     {
-        clearInterabilityMatrix();
         if (selectedUnitPostion != (-1, -1))
         {
             for (int i = -1; i <= 1; i++)
@@ -534,9 +539,57 @@ public class Board : MonoBehaviour
             clearInterabilityMatrix();
         }
     }
+
+    public void SelectBloodBoltForCardApplication()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            SetPieceInteractable((selectedUnitPostion.x, i), true);
+            if (!spawnedPieces[selectedUnitPostion.x, i].GetComponent<BoardButtonsScript>().isSelected)
+            {
+                spawnedPieces[selectedUnitPostion.x, i].GetComponent<BoardButtonsScript>().isAttackPosibility = true;
+            }
+            if ((i == hoveredTile.y) && (selectedUnitPostion.x == hoveredTile.x) && (hoveredTile != selectedUnitPostion))
+            {
+                if (i > selectedUnitPostion.y)
+                    for (int j = selectedUnitPostion.y; j < 5; j++)
+                    {
+                        spawnedPieces[selectedUnitPostion.x, j].GetComponent<BoardButtonsScript>().setSelected(2);
+                    }
+                else
+                    for (int j = 0; j < selectedUnitPostion.y; j++)
+                    {
+                        spawnedPieces[selectedUnitPostion.x, j].GetComponent<BoardButtonsScript>().setSelected(2);
+                    }
+            }
+        }
+        for (int i = 0; i < 7; i++)
+        {
+            SetPieceInteractable((i, selectedUnitPostion.y), true);
+            if (!spawnedPieces[i, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().isSelected)
+            {
+                spawnedPieces[i, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().isAttackPosibility = true;
+            }
+            if ((i == hoveredTile.x) && (selectedUnitPostion.y == hoveredTile.y) && (hoveredTile != selectedUnitPostion))
+            {
+                if (i > selectedUnitPostion.x)
+                    for (int j = selectedUnitPostion.x; j < 7; j++)
+                    {
+                        spawnedPieces[j, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(2);
+                    }
+                else
+                    for (int j = 0; j < selectedUnitPostion.x; j++)
+                    {
+                        spawnedPieces[j, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(2);
+                    }
+            }
+        }
+        SetPieceInteractable((selectedUnitPostion.x, selectedUnitPostion.y), true);
+        spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(1);
+
+    }
     public void SelectRangeUnitForCardApplication()
     {
-        clearInterabilityMatrix();
         for (int i = 0; i < vampireUnits.Count; i++)
         {
             if (vampireUnits[i].GetComponent<UnitBehavior>().position != selectedUnitPostion)
@@ -557,7 +610,6 @@ public class Board : MonoBehaviour
 
     public void SelectSelfUnitForCardApplication()
     {
-        clearInterabilityMatrix();
         if (selectedUnitPostion != (-1, -1))
         {
             spawnedPieces[selectedUnitPostion.x, selectedUnitPostion.y].GetComponent<BoardButtonsScript>().setSelected(3);
@@ -589,5 +641,16 @@ public class Board : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void HoveringTileAttack((int x, int y) pos)
+    {
+        hoveredTile = pos;
+        UpdatePeiceInteractability();
+    }
+    public void UnHoveringTileAttack((int x, int y) pos)
+    {
+        hoveredTile = (-1, -1);
+        UpdatePeiceInteractability();
     }
 }

@@ -11,7 +11,9 @@ public class BoardButtonsScript : MonoBehaviour
     /// <summary>
     /// Flag indicating if this tile is currently selected.
     /// </summary>
-    private bool isSelected = false;
+    public bool isSelected = false;
+    public bool isMultiSelected;
+    public bool isAttackPosibility;
 
     /// <summary>
     /// Image component for displaying selection highlight.
@@ -28,7 +30,7 @@ public class BoardButtonsScript : MonoBehaviour
     /// </summary>
     void Start()
     {
-        this.gameObject.GetComponent<Animator>().SetInteger("SelectionType",0);
+        this.gameObject.GetComponent<Animator>().SetInteger("SelectionType", 0);
     }
 
     /// <summary>
@@ -36,7 +38,7 @@ public class BoardButtonsScript : MonoBehaviour
     /// </summary>
     /// <param name="selected">True to select, false to deselect.</param>
 
-    
+
     public void setSelected(int color)
     {
         this.gameObject.GetComponent<Animator>().SetInteger("SelectionType", color);
@@ -51,5 +53,27 @@ public class BoardButtonsScript : MonoBehaviour
         Board.boardScript.ClickTile(position);
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Handles pointer enter events for hover effects.
+    /// </summary>
+    public void OnPointerEnter()
+    {
+        if (isAttackPosibility && !isSelected)
+        {
+            Board.boardScript.HoveringTileAttack(position);
+            Debug.Log("OnPointerEnter");
+        }
+    }
+
+    /// <summary>
+    /// Handles pointer exit events for hover effects.
+    /// </summary>
+    public void OnPointerExit()
+    {
+        if (!isSelected)
+        {
+            Board.boardScript.UnHoveringTileAttack(position);
+            Debug.Log("OnPointerExit");
+        }
+    }
 }
