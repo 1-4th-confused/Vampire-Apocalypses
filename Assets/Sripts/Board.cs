@@ -17,6 +17,9 @@ public class Board : MonoBehaviour
     /// </summary>
     public List<GameObject> units = new List<GameObject>();
 
+    [SerializeField]
+    public int score2 = 0;
+
 
     /// <summary>
     /// List of vampire units on the board.
@@ -457,7 +460,9 @@ public class Board : MonoBehaviour
                     if (i < vampireUnits.Count && vampireUnits[i] != null &&
                         vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
                     {
-                        vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage);
+                        if(vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage)){
+                            score2 += 1;
+                        }
                         break;
                     }
                 }
