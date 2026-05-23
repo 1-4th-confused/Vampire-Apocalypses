@@ -214,7 +214,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
   - type: 
     image: {fileID: 0}
@@ -222,7 +222,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
   - type: 
     image: {fileID: 0}
@@ -230,7 +230,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
   - type: 
     image: {fileID: 0}
@@ -238,7 +238,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
   - type: 
     image: {fileID: 0}
@@ -246,7 +246,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
   cardPrefab: {fileID: 2517035713136023135, guid: 93b4254251c89f745b60bc3326e07fdb, type: 3}
   SelectedCard: {fileID: 0}

@@ -559,7 +559,7 @@ public class Board : MonoBehaviour
 
     IEnumerator WaitToActivate(TableCardScript script, CardData data)
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         try
         {
@@ -570,7 +570,7 @@ public class Board : MonoBehaviour
             Debug.LogError($"AddCardToHand failed: {ex.Message}\n{ex.StackTrace}");
         }
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         if (script != null && script.gameObject != null)
             script.Activate();

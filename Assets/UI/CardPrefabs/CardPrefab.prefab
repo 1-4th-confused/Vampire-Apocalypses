@@ -132,7 +132,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
   cardAnimator: {fileID: 6030027985299579519}
   cardObject: {fileID: 4064541163945856522}

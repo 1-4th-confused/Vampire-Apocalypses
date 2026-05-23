@@ -11,49 +11,17 @@ public class CardData
 {
     // General properties
     /// <summary>
-    /// Type of the card/unit (e.g., "card" or "unit").
-    /// </summary>
     public string type;
     public string range;
     public float maxHealth;
-
-    /// <summary>
-    /// Sprite image for the card/unit.
-    /// </summary>
     public Sprite image;
-
-    /// <summary>
-    /// Name of the card/unit.
-    /// </summary>
+    public Sprite greyImage;
     public string name;
-
-    // Card-specific properties
-    /// <summary>
-    /// Damage value for cards.
-    /// </summary>
     public double damage;
-
-    /// <summary>
-    /// Defense value for cards.
-    /// </summary>
     public double defense;
-
-    // Unit-specific properties
-    /// <summary>
-    /// Magic damage for units.
-    /// </summary>
     public double magicDamage;
-
-    /// <summary>
-    /// Melee damage for units.
-    /// </summary>
-    public double melaeDamage;
-
-    /// <summary>
-    /// Ranged damage for units.
-    /// </summary>
+    public double meleeDamage;
     public double rangedDamage;
-
     public string description;
 }
 
@@ -98,7 +66,7 @@ public class CardManager : MonoBehaviour
             if (cardDataTemp.type == "card")
             {
                 cardTypes.Add(cardDataTemp);
-                ((CardData)(cardTypes[cardTypes.Count - 1])).image = Resources.Load<Sprite>(name + "Image");
+                cardDataTemp.image = Resources.Load<Sprite>(name + "Image");
             }
         }
     }
@@ -130,6 +98,7 @@ public class CardManager : MonoBehaviour
             {
                 unitTypes.Add(unitDataTemp);
                 unitDataTemp.image = Resources.Load<Sprite>(name + "Image");
+                unitDataTemp.greyImage = Resources.Load<Sprite>(name + "ImageGrey");
                 // ((CardData) (unitTypes[unitTypes.Count-1])).image = Resources.Load<Sprite>(name+"Image");
             }
         }

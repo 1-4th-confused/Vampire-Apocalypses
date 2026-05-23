@@ -1,8 +1,0 @@
-{
-    "name": "gladiator",
-    "type": "unit",
-    "magicDamage": 0,
-    "melaeDamage": 6,
-    "rangedDamage": 2,
-    "maxHealth":15
-}

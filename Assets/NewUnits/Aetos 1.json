@@ -1,8 +1,8 @@
 {
-    "name": "shamen",
+    "name": "Aetos",
     "type": "unit",
     "magicDamage": 8,
-    "melaeDamage": 1,
+    "meleeDamage": 1,
     "rangedDamage": 0,
     "maxHealth":14
 }

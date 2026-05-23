@@ -1,8 +1,8 @@
 {
-    "name": "dog",
+    "name": "Quixote",
     "type": "unit",
     "magicDamage": 0,
-    "melaeDamage": 2,
+    "meleeDamage": 2,
     "rangedDamage": 0,
-    "maxHealth":5
+    "maxHealth":20
 }

@@ -1,0 +1,8 @@
+{
+    "name": "Flamma",
+    "type": "unit",
+    "magicDamage": 0,
+    "meleeDamage": 3,
+    "rangedDamage": 1,
+    "maxHealth":7
+}

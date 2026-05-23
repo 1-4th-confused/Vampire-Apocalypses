@@ -1,0 +1,8 @@
+{
+    "name": "DrAgrippa",
+    "type": "unit",
+    "magicDamage": 3,
+    "meleeDamage": 1,
+    "rangedDamage": 1,
+    "maxHealth":8
+}

@@ -1,8 +1,8 @@
 {
-    "name": "pigeon",
+    "name": "BucketOfPigion",
     "type": "unit",
     "magicDamage": 5,
-    "melaeDamage": 5,
+    "meleeDamage": 5,
     "rangedDamage": 5,
     "maxHealth":20
 }

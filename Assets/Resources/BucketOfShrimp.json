@@ -1,8 +1,8 @@
 {
-    "name": "shrimpSprite",
+    "name": "BucketOfShrimp",
     "type": "unit",
     "magicDamage": 5,
-    "melaeDamage": 0,
+    "meleeDamage": 0,
     "rangedDamage": 8,
     "maxHealth":15
 }

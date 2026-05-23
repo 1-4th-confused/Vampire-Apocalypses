@@ -282,7 +282,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
     description: 
   info:
@@ -294,7 +294,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
     description: 
   quedInfo:
@@ -306,7 +306,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
     description: 
   unitName: {fileID: 4460571044029547228}

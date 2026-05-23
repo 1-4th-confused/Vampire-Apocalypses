@@ -1,8 +1,8 @@
 {
-    "name": "whaler",
+    "name": "Ishmael",
     "type": "unit",
     "magicDamage": 0,
-    "melaeDamage": 1,
+    "meleeDamage": 1,
     "rangedDamage": 8,
     "maxHealth":12
 }

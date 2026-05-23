@@ -443,7 +443,7 @@ MonoBehaviour:
     damage: 0
     defense: 0
     magicDamage: 0
-    melaeDamage: 0
+    meleeDamage: 0
     rangedDamage: 0
     description: 
   imageObj: {fileID: 1579809695844991429}
