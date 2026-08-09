@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System.Reflection;
 
 /// <summary>
 /// Handles interaction and selection for individual board tiles.
@@ -19,6 +20,7 @@ public class BoardButtonsScript : MonoBehaviour
     /// Image component for displaying selection highlight.
     /// </summary>
     public Image selection;
+    public Image buttonImage;
 
     /// <summary>
     /// Grid position of this tile.
@@ -43,6 +45,13 @@ public class BoardButtonsScript : MonoBehaviour
     {
         this.gameObject.GetComponent<Animator>().SetInteger("SelectionType", color);
         isSelected = color != 0;
+    }
+    public void SetImageActive(bool state)
+    {
+        if (state)
+            buttonImage.color = new Color(1, 1, 1, 1);
+        else
+            buttonImage.color = new Color(1, 1, 1, 0);
     }
 
     /// <summary>

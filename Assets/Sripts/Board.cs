@@ -110,16 +110,6 @@ public class Board : MonoBehaviour
         boardScript = this;
 
         CardManager.ReadUnitsJSON();
-        // Temporary unit initialization
-        // for (int i = 0; i < CardManager.unitTypes.Count; i++)
-        // {
-        //     Debug.Log("unit:" + ((CardData)CardManager.unitTypes[i]).name + " : " + i);
-        // }
-        // for (int i = 0; i < CardManager.cardTypes.Count; i++)
-        // {
-        //     Debug.Log("card:" + ((CardData)CardManager.cardTypes[i]).name + " : " + i);
-        // }
-
         //pidgion : 4
         //soldier : 7
         //gladiator : 2
@@ -402,8 +392,13 @@ public class Board : MonoBehaviour
             GameObject piece = spawnedPieces[pos.x, pos.y];
             if (piece != null)
             {
+                piece.GetComponent<BoardButtonsScript>().SetImageActive(state);
                 Button btn = piece.transform.GetChild(0).gameObject.GetComponent<Button>();
-                if (btn != null) btn.interactable = state;
+                if (btn != null)
+                {
+                    btn.interactable = state;
+
+                }
             }
         }
     }
@@ -460,7 +455,8 @@ public class Board : MonoBehaviour
                     if (i < vampireUnits.Count && vampireUnits[i] != null &&
                         vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
                     {
-                        if(vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage)){
+                        if (vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage))
+                        {
                             score2 += 1;
                         }
                         break;
@@ -523,7 +519,6 @@ public class Board : MonoBehaviour
     // ...existing code...
     public void ClickDeck()
     {
-        Debug.Log("deckDataRemaining"+deckDataRemaining.Count);
         if (CardScript.playerHandScript.currentCards.Count < 5)
         {
             deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
@@ -599,8 +594,6 @@ public class Board : MonoBehaviour
         {
             timer = Time.time;
         }
-        Debug.Log(timer + 5 < Time.time);
-        Debug.Log("deckDataRemaining"+deckDataRemaining.Count);
         if (deckDataRemaining.Count == 0 && CardScript.playerHandScript.currentCards != null && timer + 5 < Time.time)
         {
             deckDataRemaining = new List<CardData>();
@@ -617,9 +610,9 @@ public class Board : MonoBehaviour
                 // }
                 // if (found == false)
                 // {
-                    deckDataRemaining.Add(data);
+                deckDataRemaining.Add(data);
                 // }
-                
+
             }
             timer = Time.time;
             CreateDeck();
@@ -855,7 +848,7 @@ public class Board : MonoBehaviour
         {
             if (vampireUnits[i].GetComponent<UnitBehavior>().position != selectedUnitPostion)
             {
-                spawnedPieces[vampireUnits[i].GetComponent<UnitBehavior>().position.x, vampireUnits[i].GetComponent<UnitBehavior>().position.y].GetComponent<BoardButtonsScript>().setSelected(3);
+                spawnedPieces[vampireUnits[i].GetComponent<UnitBehavior>().position.x, vampireUnits[i].GetComponent<UnitBehavior>().position.y].GetComponent<BoardButtonsScript>().setSelected(2);
                 SetPieceInteractable(vampireUnits[i].GetComponent<UnitBehavior>().position, true);
             }
         }

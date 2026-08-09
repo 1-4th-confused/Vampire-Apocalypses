@@ -69,16 +69,18 @@ public class UnitBehavior : MonoBehaviour
     {
         if (moved)
         {
-            double timeAlongPathNormalized = 6 * (Time.realtimeSinceStartupAsDouble - timeMoved);
+            double timeAlongPathNormalized = 2.3 * (Time.realtimeSinceStartupAsDouble - timeMoved);
             timeAlongPathNormalized = System.Math.Pow(timeAlongPathNormalized, 1.0 / 3.0) * (2.0 / 3.0) + timeAlongPathNormalized * (1.0 / 3.0);
             if (timeAlongPathNormalized > 1)
             {
                 currentPosition = wantedPosition;
                 this.gameObject.transform.position = wantedPosition;
                 moved = false;
+                unitAnimator.SetBool("walking", false);
             }
             else
             {
+                unitAnimator.SetBool("walking", true);
                 this.gameObject.transform.position = new Vector3(
                     (float)(currentPosition.x + timeAlongPathNormalized * (wantedPosition.x - currentPosition.x)),
                     (float)(currentPosition.y + timeAlongPathNormalized * (wantedPosition.y - currentPosition.y)),
@@ -139,6 +141,8 @@ public class UnitBehavior : MonoBehaviour
     public void SetHasActed(bool hasActed)
     {
         this.hasActed = hasActed;
+        unitAnimator.SetBool("active", !hasActed);
+
         if (hasActed)
         {
             UnitImage.color = new Color(0.5f, 0.5f, 0.5f, 1);

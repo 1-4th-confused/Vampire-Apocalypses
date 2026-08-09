@@ -54,6 +54,7 @@ MonoBehaviour:
   isMultiSelected: 0
   isAttackPosibility: 0
   selection: {fileID: 4911758821382209570}
+  buttonImage: {fileID: 7573109104923595497}
 --- !u!95 &3672049087473967190
 Animator:
   serializedVersion: 7
@@ -103,6 +104,18 @@ PrefabInstance:
     - target: {fileID: 745584926189537350, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2840607595259386509, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2840607595259386509, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2840607595259386509, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+      propertyPath: m_Color.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5157478810347449426, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
       propertyPath: m_Pivot.x
@@ -192,6 +205,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectionImage
       objectReference: {fileID: 0}
+    - target: {fileID: 6618582619605012156, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8060466581311266655, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8060466581311266655, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+      propertyPath: m_Colors.m_ColorMultiplier
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8060466581311266655, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -270,6 +295,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 5652803775934040164}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &7573109104923595497 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2840607595259386509, guid: 4900a02f170434944a8a54a27f65fd5f, type: 3}
+  m_PrefabInstance: {fileID: 5652803775934040164}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951198878974100881}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}

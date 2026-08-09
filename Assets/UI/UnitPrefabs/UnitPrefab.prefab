@@ -439,6 +439,7 @@ MonoBehaviour:
     range: 
     maxHealth: 0
     image: {fileID: 0}
+    greyImage: {fileID: 0}
     name: 
     damage: 0
     defense: 0
