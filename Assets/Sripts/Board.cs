@@ -466,15 +466,26 @@ public class Board : MonoBehaviour
                     if (i < vampireUnits.Count && vampireUnits[i] != null &&
                         vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
                     {
+                        for(int j = 0; j < units.Count; j++)
+                            if (units[j].GetComponent<UnitBehavior>().position == selectedUnitPosition)
+                            {
+                                if (units[j].GetComponent<UnitBehavior>().position.x>pos.x)
+                                    units[j].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", false);
+                                else if (units[j].GetComponent<UnitBehavior>().position.x<pos.x)
+                                    units[j].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", true);
+                                if (units[j].GetComponent<UnitBehavior>().position.x>pos.x)
+                                    vampireUnits[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", true);
+                                else if (units[j].GetComponent<UnitBehavior>().position.x<pos.x)
+                                    vampireUnits[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", false);
+                                
+                                units[j].GetComponent<UnitBehavior>().unitAnimator.SetTrigger("attack");
+                                vampireUnits[i].GetComponent<UnitBehavior>().unitAnimator.SetTrigger("damage");
+                                break;
+                            }
+
                         if (vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage))
                         {
                             score2 += 1;
-                        }
-                        for (int j = 0;j<units.Count;j++){
-                            if (units[i].GetComponent<UnitBehavior>().position == selectedUnitPosition)
-                            {
-                                units[i].GetComponent<UnitBehavior>().unitAnimator.SetTrigger("attack");
-                            }
                         }
                         break;
                     }
@@ -519,6 +530,10 @@ public class Board : MonoBehaviour
             {
                 if (units[i].GetComponent<UnitBehavior>().position == selectedUnitPosition)
                 {
+                    if (units[i].GetComponent<UnitBehavior>().position.x>pos.x)
+                        units[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", false);
+                    else if (units[i].GetComponent<UnitBehavior>().position.x<pos.x)
+                        units[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", true);
                     units[i].GetComponent<UnitBehavior>().movePosition(pos);
                     units[i].GetComponent<UnitBehavior>().SetHasActed(true);
                     break;

@@ -142,15 +142,6 @@ public class UnitBehavior : MonoBehaviour
     {
         this.hasActed = hasActed;
         unitAnimator.SetBool("active", !hasActed);
-
-        if (hasActed)
-        {
-            UnitImage.color = new Color(0.5f, 0.5f, 0.5f, 1);
-        }
-        else
-        {
-            UnitImage.color = new Color(1, 1, 1, 1);
-        }
     }
     public void DisplayDamage()
     {
