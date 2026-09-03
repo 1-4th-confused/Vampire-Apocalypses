@@ -1,5 +1,9 @@
 {
     "[csharp]": {
 	    "editor.format.braceStyle": "collapse"
-    }
+    },
+    "cSpell.words": [
+        "Interactability",
+        "Respawn"
+    ]
 }
