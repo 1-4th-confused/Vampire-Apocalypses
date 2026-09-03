@@ -120,22 +120,22 @@ public class Board : MonoBehaviour
 
 
         vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        vampireUnits[0].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[3]);
+        vampireUnits[0].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
         vampireUnits[0].GetComponent<UnitBehavior>().position = (2, 4);
 
         vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        vampireUnits[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[8]);
+        vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[8]);
         vampireUnits[1].GetComponent<UnitBehavior>().position = (4, 4);
 
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        units[0].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[4]);
+        units[0].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[4]);
         units[0].GetComponent<UnitBehavior>().position = (2, 0);
-        units[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[7]);
+        units[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[7]);
         units[1].GetComponent<UnitBehavior>().position = (3, 0);
 
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        units[2].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[2]);
+        units[2].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[2]);
         units[2].GetComponent<UnitBehavior>().position = (4, 0);
 
         CreateTiles();
@@ -182,7 +182,7 @@ public class Board : MonoBehaviour
         GameObject tempUnit = Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent);
 
         units.Add(tempUnit);
-        units[2].GetComponent<UnitBehavior>().unitdata = unitType;
+        units[2].GetComponent<UnitBehavior>().unitData = unitType;
         units[2].GetComponent<UnitBehavior>().position = pos;
     }
 
@@ -939,11 +939,11 @@ public class Board : MonoBehaviour
             vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
             if (Random.Range(0, 1) > 0.5f)
             {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[3]);
+                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
             }
             else
             {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[8]);
+                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[8]);
             }
             vampireUnits[1].GetComponent<UnitBehavior>().position = (3, 4);
         }
@@ -952,11 +952,11 @@ public class Board : MonoBehaviour
             vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
             if (Random.Range(0, 1) > 0.5f)
             {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[3]);
+                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
             }
             else
             {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitdata = ((CardData)CardManager.unitTypes[8]);
+                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[8]);
             }
             vampireUnits[1].GetComponent<UnitBehavior>().position = (4, 4);
         }

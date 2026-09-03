@@ -15,7 +15,7 @@ public class UnitBehavior : MonoBehaviour
     /// <summary>
     /// Data associated with this unit.
     /// </summary>
-    public CardData unitdata;
+    public CardData unitData;
 
     /// <summary>
     /// GameObject containing the unit's image.
@@ -59,10 +59,10 @@ public class UnitBehavior : MonoBehaviour
     /// </summary>
     void Start()
     {
-        imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;
-        sheildObj.GetComponent<UnityEngine.UI.Image>().sprite = unitdata.image;
+        imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.image;
+        sheildObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.image;
         updatePosition();
-        health = unitdata.maxHealth;
+        health = unitData.maxHealth;
         DisplayDamage();
     }
     void Update()
@@ -141,25 +141,31 @@ public class UnitBehavior : MonoBehaviour
     public void SetHasActed(bool hasActed)
     {
         this.hasActed = hasActed;
-        unitAnimator.SetBool("active", !hasActed);
+        if (this.hasActed)
+        {
+            imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.greyImage;
+        } else {
+            imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.image;
+        }
+        unitAnimator.SetBool("active", !this.hasActed);
     }
     public void DisplayDamage()
     {
         if (defense > 0)
         {
             unitAnimator.SetBool("Sheild", true);
-            HealthNumber.text = "<color=#549eb6>" + defense + "+</color>" + health + "/" + unitdata.maxHealth;
+            HealthNumber.text = "<color=#549eb6>" + defense + "+</color>" + health + "/" + unitData.maxHealth;
         }
         else
         {
             unitAnimator.SetBool("Sheild", false);
-            HealthNumber.text = health + "/" + unitdata.maxHealth;
+            HealthNumber.text = health + "/" + unitData.maxHealth;
         }
 
-        defenseBar.transform.localScale = new Vector3(defense / unitdata.maxHealth, 1f, 1f);
-        defenseBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (defense / unitdata.maxHealth)), defenseBar.transform.position.y, defenseBar.transform.position.z);
-        HealthBar.transform.localScale = new Vector3(health / unitdata.maxHealth, 1f, 1f);
-        HealthBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (health / unitdata.maxHealth)), HealthBar.transform.position.y, HealthBar.transform.position.z);
+        defenseBar.transform.localScale = new Vector3(defense / unitData.maxHealth, 1f, 1f);
+        defenseBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (defense / unitData.maxHealth)), defenseBar.transform.position.y, defenseBar.transform.position.z);
+        HealthBar.transform.localScale = new Vector3(health / unitData.maxHealth, 1f, 1f);
+        HealthBar.transform.position = new Vector3(this.gameObject.transform.position.x - 0.1667f * 0.48f * (1f - (health / unitData.maxHealth)), HealthBar.transform.position.y, HealthBar.transform.position.z);
     }
 
 }
