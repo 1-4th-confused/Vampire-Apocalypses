@@ -90,7 +90,7 @@ public class TableCardScript : MonoBehaviour
     /// <summary>
     /// Triggers the card removal animation and destroys the game object.
     /// </summary>
-    public void RemoveCard()
+    public void RemoveCardFromDeck()
     {
         cardAnimator.SetTrigger("slideOut");
         Destroy(this.gameObject, 0.5f);

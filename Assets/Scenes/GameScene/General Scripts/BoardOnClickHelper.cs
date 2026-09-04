@@ -14,16 +14,10 @@ public class BoardOnClickHelper : ScriptableObject
                 if (boardScript.units[i].GetComponent<UnitBehavior>().position == pos)
                 {
                     boardScript.units[i].GetComponent<UnitBehavior>().defendThisUnit(CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.defense);
-                    GameObject cardToRemove = CardScript.playerHandScript.SelectedCard;
-                    CardData cardData = cardToRemove.GetComponent<CardScript>().cardType;
 
-                    CardScript.playerHandScript.currentCards.Remove(cardData);
-                    CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
-
-                    Board.helper.RemoveCard(cardToRemove);
+                    Board.helper.RemoveCard(CardScript.playerHandScript.SelectedCard);
+                    
                     CardScript.playerHandScript.SelectedCard = null;
-
-                    CardScript.playerHandScript.rehandTheHand();
                     boardScript.units[i].GetComponent<UnitBehavior>().SetHasActed(true);
                     break;
                 }
@@ -31,8 +25,7 @@ public class BoardOnClickHelper : ScriptableObject
             boardScript.UpdatePieceInteractability();
     }
     
-    public void PlayStandardAttack((int x, int y) pos, double multipler) {
-        GameObject playedCard = CardScript.playerHandScript.SelectedCard;
+    public void PlayStandardAttack((int x, int y) pos, GameObject playedCard, CardData attacker, bool ranged) {
         CardData cardData = playedCard.GetComponent<CardScript>().cardType;
 
         // search for the vampire and unit gameObjects 
@@ -53,23 +46,24 @@ public class BoardOnClickHelper : ScriptableObject
             }
 
         if (unitAttacking != null && vampAttacked != null)
-            Board.helper.UnitAttack(unitAttacking, vampAttacked, cardData.damage * multipler); //TODO: add Damage Multiplyer for Ranged/mele
+            Board.helper.UnitAttack(unitAttacking, vampAttacked, cardData.damage, ranged); //TODO: add Damage Multiplyer for Ranged/mele
         else
             Debug.LogError("Either unitAttacking or vampAttacked is null. Cannot perform attack.");
-
-        CardScript.playerHandScript.currentCards.Remove(cardData);
-        CardScript.playerHandScript.currentCardObjs.Remove(playedCard);
 
         Board.helper.RemoveCard(playedCard);
         CardScript.playerHandScript.SelectedCard = null;
 
-        CardScript.playerHandScript.rehandTheHand();
         // set the unit that performed the attack to have acted
         for (int i = 0; i < boardScript.units.Count; i++)
         {
             if (boardScript.selectedUnitPosition == boardScript.units[i].GetComponent<UnitBehavior>().position)
             {
-                boardScript.units[i].GetComponent<UnitBehavior>().SetHasActed(true);
+                if (ranged) {
+                    boardScript.units[i].GetComponent<UnitBehavior>().SetHasActed(true, 50f/60f);
+                } else {
+                    boardScript.units[i].GetComponent<UnitBehavior>().SetHasActed(true, 15f/60f);
+                }
+                
             }
         }
         boardScript.UpdatePieceInteractability();

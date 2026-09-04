@@ -27,10 +27,10 @@ RectTransform:
   m_GameObject: {fileID: 1018463254378828027}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -0.10000001, y: 0.10000001, z: 1}
+  m_LocalScale: {x: -0.100000024, y: 0.100000024, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7527637227577592667}
+  m_Father: {fileID: 2990292596796469584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -108,7 +108,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7527637227577592667}
+  - {fileID: 3691458238122501678}
+  - {fileID: 3339988571405939183}
   m_Father: {fileID: 5150674199274087623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -255,18 +258,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2644723846908496257}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3691458238122501678}
-  - {fileID: 3339988571405939183}
-  m_Father: {fileID: 5150674199274087623}
+  m_Children: []
+  m_Father: {fileID: 2990292596796469584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.45827}
+  m_AnchoredPosition: {x: 0, y: -0}
   m_SizeDelta: {x: 0.33333334, y: 0.083333336}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6403727358687409857
@@ -414,7 +415,6 @@ RectTransform:
   m_Children:
   - {fileID: 4619095926093881074}
   - {fileID: 2990292596796469584}
-  - {fileID: 7527637227577592667}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9752f1d5e189f6f4282982673b324632, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitBehavior
-  unitdata:
+  unitData:
     type: 
     range: 
     maxHealth: 0
@@ -462,6 +462,7 @@ MonoBehaviour:
   HealthNumber: {fileID: 4796105324521897302}
   unitAnimator: {fileID: 8987162731068423597}
   UnitImage: {fileID: 6629349973968194513}
+  isVampire: 0
 --- !u!95 &8987162731068423597
 Animator:
   serializedVersion: 7
@@ -514,11 +515,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7527637227577592667}
+  m_Father: {fileID: 2990292596796469584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0.33333, y: 0.08333}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &86670044820726570

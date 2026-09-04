@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Reflection;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -139,16 +141,20 @@ public class UnitBehavior : MonoBehaviour
         this.defense += (float)defense;
         DisplayDamage();
     }
-    public void SetHasActed(bool hasActed)
+    public void SetHasActed(bool hasActed, double delay = 0)
     {
         this.hasActed = hasActed;
         if (this.hasActed)
         {
-            imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.greyImage;
+            StartCoroutine(SetImageGrey(delay));
         } else {
             imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.image;
         }
         unitAnimator.SetBool("active", !this.hasActed);
+    }
+    private IEnumerator SetImageGrey(double delay = 0) {
+        yield return new WaitForSeconds((float)delay);
+        imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.greyImage;
     }
     public void DisplayDamage()
     {

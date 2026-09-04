@@ -13,6 +13,7 @@ public class Board : MonoBehaviour
     /// <summary>
     /// List of player units on the board.
     /// </summary>
+    public float debugTimescale = 1f;
     public List<GameObject> units = new List<GameObject>();
 
     [SerializeField]
@@ -117,13 +118,8 @@ public class Board : MonoBehaviour
         //majician : 3
         //vampire : 8
 
-        vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        vampireUnits[0].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
-        vampireUnits[0].GetComponent<UnitBehavior>().position = (2, 4);
-
-        vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[8]);
-        vampireUnits[1].GetComponent<UnitBehavior>().position = (4, 4);
+        SpawnEnemy((CardData)CardManager.unitTypes[8],(4, 4));
+        SpawnEnemy((CardData)CardManager.unitTypes[3],(2, 4));
 
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
@@ -165,6 +161,8 @@ public class Board : MonoBehaviour
     }
     public void Update()
     {
+        Time.timeScale = debugTimescale;
+
         if (timer == -1f)
         {
             timer = Time.time;
@@ -207,10 +205,10 @@ public class Board : MonoBehaviour
     void SpawnEnemy(CardData unitType, (int x, int y) pos)
     {
         GameObject tempUnit = Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent);
-
-        units.Add(tempUnit);
-        units[2].GetComponent<UnitBehavior>().unitData = unitType;
-        units[2].GetComponent<UnitBehavior>().position = pos;
+        tempUnit.GetComponent<UnitBehavior>().isVampire = true;
+        vampireUnits.Add(tempUnit);
+        tempUnit.GetComponent<UnitBehavior>().unitData = unitType;
+        tempUnit.GetComponent<UnitBehavior>().position = pos;
     }
     IEnumerator CreateDeckInSequence()
     {
@@ -448,10 +446,9 @@ public class Board : MonoBehaviour
                     throw new ArgumentException("Unit of type" + selectedCardData.type + " not implemented yet.");
                 }
             } else if (selectedCardData.range == "ranged") {
-                Debug.Log("hit");
-                clickHelperScript.PlayStandardAttack(pos, 1); //TODO: add Damage multiplier for Ranged stats
+                clickHelperScript.PlayStandardAttack(pos, CardScript.playerHandScript.SelectedCard, helper.UnitAt(selectedUnitPosition).GetComponent<UnitBehavior>().unitData, true); //TODO: add Damage multiplier for Ranged stats
             } else if (selectedCardData.range == "melee") {
-                clickHelperScript.PlayStandardAttack(pos, 1); //TODO: add Damage multiplier for melee stats
+                clickHelperScript.PlayStandardAttack(pos, CardScript.playerHandScript.SelectedCard, helper.UnitAt(selectedUnitPosition).GetComponent<UnitBehavior>().unitData, false); //TODO: add Damage multiplier for melee stats
             }
         } 
         else if (selectedUnitPosition == (-1, -1)) {
@@ -484,8 +481,6 @@ public class Board : MonoBehaviour
         }
     }
 
-
-
     /// <summary>
     /// Handles deck click to draw a card.
     /// </summary>
@@ -494,7 +489,8 @@ public class Board : MonoBehaviour
     {
         if (CardScript.playerHandScript.currentCards.Count < 5)
         {
-            deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
+            deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCardFromDeck();
+
             int randomIntToDraw = UnityEngine.Random.Range(0, deckDataRemaining.Count);
             CardData drawnCard = deckDataRemaining[randomIntToDraw];
             deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
@@ -513,7 +509,7 @@ public class Board : MonoBehaviour
     {
         if (CardScript.playerHandScript.currentCards.Count < 5)
         {
-            deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
+            deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCardFromDeck();
             int randomIntToDraw = UnityEngine.Random.Range(0, deckDataRemaining.Count);
             CardData drawnCard = deckDataRemaining[randomIntToDraw];
             deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
@@ -524,7 +520,6 @@ public class Board : MonoBehaviour
             }
         }
     }
-
     IEnumerator WaitToActivate(TableCardScript script, CardData data)
     {
         yield return new WaitForSeconds(0.1f);
@@ -564,6 +559,9 @@ public class Board : MonoBehaviour
     public void IterateVampAI()
     {
         for (int i = 0; i < vampireUnits.Count; i++)
+            vampireUnits[i].GetComponent<UnitBehavior>().hasActed = false;
+
+        for (int i = 0; i < vampireUnits.Count; i++)
         {
             if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed && vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length == 0)
             {
@@ -584,7 +582,7 @@ public class Board : MonoBehaviour
                         };
                         vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions = temp;
                         vampireUnits[i].GetComponent<UnitBehavior>().quedDamage = 5;
-                        vampireUnits[i].GetComponent<UnitBehavior>().hasActed = true;
+                        vampireUnits[i].GetComponent<UnitBehavior>().SetHasActed(true);
                     }
                 }
             }
@@ -596,14 +594,14 @@ public class Board : MonoBehaviour
                     {
                         if (units[h].GetComponent<UnitBehavior>().position == vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions[j])
                         {
-                            units[h].GetComponent<UnitBehavior>().damageThisUnit(vampireUnits[i].GetComponent<UnitBehavior>().quedDamage);
+                            helper.UnitAttack(vampireUnits[i], units[h], vampireUnits[i].GetComponent<UnitBehavior>().quedDamage, false);
                             vampireUnits[i].GetComponent<UnitBehavior>().quedDamage = 0;
 
                         }
                     }
                 }
                 vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions = new (int x, int y)[0];
-                vampireUnits[i].GetComponent<UnitBehavior>().hasActed = true;
+                vampireUnits[i].GetComponent<UnitBehavior>().GetComponent<UnitBehavior>().SetHasActed(true);
             }
             if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed)
             {
@@ -634,42 +632,35 @@ public class Board : MonoBehaviour
                     {
                         if (closestUnit.GetComponent<UnitBehavior>().position.y > vampireUnits[i].GetComponent<UnitBehavior>().position.y)
                         {
-                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
-                                (
+
+                            helper.MoveUnit(vampireUnits[i],(
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.x,
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.y + 1
-                                )
-                            );
+                                ));
                         }
                         else
                         {
-                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
-                                (
+                            helper.MoveUnit(vampireUnits[i],(
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.x,
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.y - 1
-                                )
-                            );
+                                ));
                         }
                     }
                     else
                     {
                         if (closestUnit.GetComponent<UnitBehavior>().position.x > vampireUnits[i].GetComponent<UnitBehavior>().position.x)
                         {
-                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
-                                (
+                            helper.MoveUnit(vampireUnits[i],(
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.x + 1,
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.y
-                                )
-                            );
+                                ));
                         }
                         else
                         {
-                            vampireUnits[i].GetComponent<UnitBehavior>().movePosition(
-                                (
+                            helper.MoveUnit(vampireUnits[i],(
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.x - 1,
                                     vampireUnits[i].GetComponent<UnitBehavior>().position.y
-                                )
-                            );
+                                ));
                         }
                     }
                 }
@@ -718,7 +709,10 @@ public class Board : MonoBehaviour
                         }
                         else
                         {
-                            spawnedPieces[selectedUnitPosition.x + i, selectedUnitPosition.y + j].GetComponent<BoardButtonsScript>().setSelected(0);
+                            if (selectedUnitPosition.x + i> 0 && selectedUnitPosition.y + j> 0 && selectedUnitPosition.x + i<5 && selectedUnitPosition.y + j<7)
+                            {
+                                spawnedPieces[selectedUnitPosition.x + i, selectedUnitPosition.y + j].GetComponent<BoardButtonsScript>().setSelected(0);
+                            }
                         }
                     }
                     else
@@ -839,31 +833,18 @@ public class Board : MonoBehaviour
     }
     public void RespawnVampire()
     {
-        if (!IsSpaceOccupied((3, 4)))
-        {
-            vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-            if (UnityEngine.Random.Range(0, 1) > 0.5f)
-            {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
+        if (!IsSpaceOccupied((3, 4))) {
+            if (UnityEngine.Random.Range(0, 1) > 0.5f) {
+                SpawnEnemy(((CardData)CardManager.unitTypes[3]),(3, 4));
+            } else {
+                SpawnEnemy(((CardData)CardManager.unitTypes[8]),(3, 4));
             }
-            else
-            {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[8]);
+        } else {
+            if (UnityEngine.Random.Range(0, 1) > 0.5f) {
+                SpawnEnemy(((CardData)CardManager.unitTypes[3]),(4, 4));
+            } else {
+                SpawnEnemy(((CardData)CardManager.unitTypes[8]),(4, 4));
             }
-            vampireUnits[1].GetComponent<UnitBehavior>().position = (3, 4);
-        }
-        else
-        {
-            vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-            if (UnityEngine.Random.Range(0, 1) > 0.5f)
-            {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
-            }
-            else
-            {
-                vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[8]);
-            }
-            vampireUnits[1].GetComponent<UnitBehavior>().position = (4, 4);
         }
     }
     public void HoveringTileAttack((int x, int y) pos)
@@ -883,5 +864,20 @@ public class Board : MonoBehaviour
             createdEndPanel = true;
             Instantiate(endPanelObject, endPanelCanvas.transform);
         }
+    }
+
+    public void playDamageAnimation(GameObject target, float delay, double damage) { // DO NOT USE THIS IS ONLY HERE BECAUSE IT NEEDS TO BE IN A MONOBEHAVIOR
+        StartCoroutine(PlayDamageAnimationCoroutine(target, delay, damage));
+    }
+    public IEnumerator PlayDamageAnimationCoroutine(GameObject target, float delay, double damage) { // DO NOT USE THIS IS ONLY HERE BECAUSE IT NEEDS TO BE IN A MONOBEHAVIOR
+        yield return new WaitForSeconds(delay);
+        if (target.GetComponent<UnitBehavior>().damageThisUnit(damage)){
+            if (target.GetComponent<UnitBehavior>().isVampire)
+                boardScript.score2 += 1;
+            target.GetComponent<UnitBehavior>().unitAnimator.SetTrigger("death");
+        } else {
+            target.GetComponent<UnitBehavior>().unitAnimator.SetTrigger("damage");
+        }
+        
     }
 }
