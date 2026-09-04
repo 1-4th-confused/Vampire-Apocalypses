@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using System.Net.Http.Headers;
 using System.Collections;
-using System.IO;
-using System.Data;
-using System.Runtime.InteropServices;
+using System;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Manages the game board, including unit placement, tile interaction, and deck management.
@@ -45,7 +43,8 @@ public class Board : MonoBehaviour
     /// Static reference to the board script instance.
     /// </summary>
     public static Board boardScript;
-
+    public static BoardOnClickHelper clickHelperScript;
+    public static BoardHelper helper;
     /// <summary>
     /// List of deck card game objects.
     /// </summary>
@@ -84,7 +83,7 @@ public class Board : MonoBehaviour
     /// <summary>
     /// 2D array of spawned tile pieces.
     /// </summary>
-    private GameObject[,] spawnedPieces;
+    public GameObject[,] spawnedPieces;
 
     /// <summary>
     /// Position of the currently selected unit.
@@ -107,7 +106,9 @@ public class Board : MonoBehaviour
     void Start()
     {
         boardScript = this;
-
+        helper = ScriptableObject.CreateInstance(typeof(BoardHelper)) as BoardHelper;
+        clickHelperScript = ScriptableObject.CreateInstance(typeof(BoardOnClickHelper)) as BoardOnClickHelper;
+        
         CardManager.ReadUnitsJSON();
         //pidgion : 4
         //soldier : 7
@@ -115,9 +116,6 @@ public class Board : MonoBehaviour
 
         //majician : 3
         //vampire : 8
-
-
-
 
         vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
         vampireUnits[0].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
@@ -165,7 +163,36 @@ public class Board : MonoBehaviour
 
         UpdatePieceInteractability();
     }
+    public void Update()
+    {
+        if (timer == -1f)
+        {
+            timer = Time.time;
+        }
+        if (deckDataRemaining.Count == 0 && CardScript.playerHandScript.currentCards != null && timer + 5 < Time.time)
+        {
+            deckDataRemaining = new List<CardData>();
+            foreach (CardData data in deckData)
+            {
+                // bool found = false;
+                // for (int i = 0; i < CardScript.playerHandScript.currentCards.Count; i++)
+                // {
+                //     if (data == CardScript.playerHandScript.currentCards[i])
+                //     {
+                //         found = true;
+                //         break;
+                //     }
+                // }
+                // if (found == false)
+                // {
+                deckDataRemaining.Add(data);
+                // }
 
+            }
+            timer = Time.time;
+            CreateDeck();
+        }
+    }
     /// <summary>
     /// Destroys existing deck objects and recreates the deck.
     /// </summary>
@@ -185,10 +212,6 @@ public class Board : MonoBehaviour
         units[2].GetComponent<UnitBehavior>().unitData = unitType;
         units[2].GetComponent<UnitBehavior>().position = pos;
     }
-
-    /// <summary>
-    /// Coroutine to instantiate deck cards sequentially with delays.
-    /// </summary>
     IEnumerator CreateDeckInSequence()
     {
         for (int i = 0; i < deckData.Count; i++)
@@ -362,12 +385,6 @@ public class Board : MonoBehaviour
                     ].GetComponent<BoardButtonsScript>().setSelected(4);
         }
     }
-
-    /// <summary>
-    /// Checks if a board position is occupied by any unit.
-    /// </summary>
-    /// <param name="pos">The position to check.</param>
-    /// <returns>True if occupied, false otherwise.</returns>
     public bool IsSpaceOccupied((int x, int y) pos)
     {
         for (int i = 0; i < units.Count; i++)
@@ -386,12 +403,6 @@ public class Board : MonoBehaviour
         }
         return false;
     }
-
-    /// <summary>
-    /// Sets the interactability of a board tile.
-    /// </summary>
-    /// <param name="pos">The tile position.</param>
-    /// <param name="state">True to enable, false to disable.</param>
     public void SetPieceInteractable((int x, int y) pos, bool state)
     {
         if (
@@ -418,138 +429,62 @@ public class Board : MonoBehaviour
     /// <param name="pos">The clicked tile position.</param>
     public void ClickTile((int x, int y) pos)
     {
-        // if selected card is a defend call defendThisUnit on selected unit and remove the defend card from the hand.
-        if (CardScript.playerHandScript.SelectedCard != null && CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.name == "defend")
-        {
-            // Iterate backwards to safely remove during iteration
-            for (int i = 0; i < units.Count; i++)
-            {
-                if (units[i].GetComponent<UnitBehavior>().position == pos)
-                {
-                    units[i].GetComponent<UnitBehavior>().defendThisUnit(CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType.defense);
-                    GameObject cardToRemove = CardScript.playerHandScript.SelectedCard;
-                    CardData cardData = cardToRemove.GetComponent<CardScript>().cardType;
-
-                    CardScript.playerHandScript.currentCards.Remove(cardData);
-                    CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
-
-                    RemoveCard(cardToRemove);
-                    CardScript.playerHandScript.SelectedCard = null;
-
-                    CardScript.playerHandScript.rehandTheHand();
-                    units[i].GetComponent<UnitBehavior>().SetHasActed(true);
-                    break;
-                }
-            }
-            UpdatePieceInteractability();
+        CardData selectedCardData = null;
+        if (CardScript.playerHandScript.SelectedCard != null) {
+            selectedCardData = CardScript.playerHandScript.SelectedCard.GetComponent<CardScript>().cardType;
         }
-        // if player clicks on the same unit that is already selected, deselect it and clear the interactability matrix.
-        else if (selectedUnitPosition == pos)
-        {
-            clearInteractabilityMatrix();
-            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
-            selectedUnitPosition = (-1, -1);
-            UpdatePieceInteractability();
-        }
-        else if (CardScript.playerHandScript.SelectedCard != null)
-        {
-            if (selectedUnitPosition != (-1, -1))
-            {
-                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(2);
-                var cardToRemove = CardScript.playerHandScript.SelectedCard;
-                var cardData = cardToRemove.GetComponent<CardScript>().cardType;
-                var damage = cardData.damage;
 
-                // Iterate backwards to safely remove during iteration
-                for (int i = vampireUnits.Count - 1; i >= 0; i--)
-                {
-                    if (i < vampireUnits.Count && vampireUnits[i] != null &&
-                        vampireUnits[i].GetComponent<UnitBehavior>().position == pos)
-                    {
-                        for(int j = 0; j < units.Count; j++)
-                            if (units[j].GetComponent<UnitBehavior>().position == selectedUnitPosition)
-                            {
-                                if (units[j].GetComponent<UnitBehavior>().position.x>pos.x)
-                                    units[j].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", false);
-                                else if (units[j].GetComponent<UnitBehavior>().position.x<pos.x)
-                                    units[j].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", true);
-                                if (units[j].GetComponent<UnitBehavior>().position.x>pos.x)
-                                    vampireUnits[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", true);
-                                else if (units[j].GetComponent<UnitBehavior>().position.x<pos.x)
-                                    vampireUnits[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", false);
-                                
-                                units[j].GetComponent<UnitBehavior>().unitAnimator.SetTrigger("attack");
-                                vampireUnits[i].GetComponent<UnitBehavior>().unitAnimator.SetTrigger("damage");
-                                break;
-                            }
-
-                        if (vampireUnits[i].GetComponent<UnitBehavior>().damageThisUnit(damage))
-                        {
-                            score2 += 1;
-                        }
-                        break;
-                    }
-                }
-
-                CardScript.playerHandScript.currentCards.Remove(cardData);
-                CardScript.playerHandScript.currentCardObjs.Remove(cardToRemove);
-
-                RemoveCard(cardToRemove);
-                CardScript.playerHandScript.SelectedCard = null;
-
-                CardScript.playerHandScript.rehandTheHand();
-                for (int i = 0; i < units.Count; i++)
-                {
-                    if (selectedUnitPosition == units[i].GetComponent<UnitBehavior>().position)
-                    {
-                        units[i].GetComponent<UnitBehavior>().SetHasActed(true);
-                    }
-                }
-                UpdatePieceInteractability();
-            }
-            else
-            {
-                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
-                selectedUnitPosition = pos;
-                spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(1);
-                UpdatePieceInteractability();
+        if (CardScript.playerHandScript.SelectedCard != null && selectedUnitPosition == (-1, -1)) {
+            if (selectedCardData.name == "defend") {
+                clickHelperScript.PlayDefend(pos);
+                return;
             }
         }
-        else if (selectedUnitPosition == (-1, -1))
-        {
-            // Select unit
-            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(0);
-            selectedUnitPosition = pos;
-            spawnedPieces[pos.x, pos.y].GetComponent<BoardButtonsScript>().setSelected(1);
-            UpdatePieceInteractability();
-        }
-        else
-        {
+        if (CardScript.playerHandScript.SelectedCard != null && selectedUnitPosition != (-1, -1)) {
+            if (selectedCardData.range == "custom") {
+                if (selectedCardData.type == "Implemented") {
+                    
+                } else {
+                    throw new ArgumentException("Unit of type" + selectedCardData.type + " not implemented yet.");
+                }
+            } else if (selectedCardData.range == "ranged") {
+                Debug.Log("hit");
+                clickHelperScript.PlayStandardAttack(pos, 1); //TODO: add Damage multiplier for Ranged stats
+            } else if (selectedCardData.range == "melee") {
+                clickHelperScript.PlayStandardAttack(pos, 1); //TODO: add Damage multiplier for melee stats
+            }
+        } 
+        else if (selectedUnitPosition == (-1, -1)) {
+            clickHelperScript.SelectUnitPosition(pos);
+        } 
+        else if (selectedUnitPosition == pos) {
+            helper.DeselectUnit();
+        } 
+        else if (selectedUnitPosition != (-1, -1) && CardScript.playerHandScript.SelectedCard == null) {
             // Move selected unit to new position
+            GameObject selectedUnit = null;
+
             for (int i = 0; i < units.Count; i++)
             {
                 if (units[i].GetComponent<UnitBehavior>().position == selectedUnitPosition)
                 {
-                    if (units[i].GetComponent<UnitBehavior>().position.x>pos.x)
-                        units[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", false);
-                    else if (units[i].GetComponent<UnitBehavior>().position.x<pos.x)
-                        units[i].GetComponent<UnitBehavior>().unitAnimator.SetBool("facingRight", true);
-                    units[i].GetComponent<UnitBehavior>().movePosition(pos);
-                    units[i].GetComponent<UnitBehavior>().SetHasActed(true);
+                    selectedUnit = units[i];
                     break;
                 }
             }
-            spawnedPieces[selectedUnitPosition.x, selectedUnitPosition.y].GetComponent<BoardButtonsScript>().setSelected(0);
-            selectedUnitPosition = (-1, -1);
-            UpdatePieceInteractability();
+            if (selectedUnit == null)
+            {
+                Debug.LogError("No unit found at the selected unit position.");
+            } else {
+                helper.MoveUnit(selectedUnit, pos);
+            }
+        } 
+        else {
+            Debug.LogError("passed all checks in clickTile but satisfied none");
         }
     }
 
-    public void RemoveCard(GameObject cardToRemove)
-    {
-        cardToRemove.GetComponent<CardScript>().cardAnimator.SetBool("removed", true);
-        Destroy(cardToRemove, 0.5f);
-    }
+
 
     /// <summary>
     /// Handles deck click to draw a card.
@@ -560,7 +495,7 @@ public class Board : MonoBehaviour
         if (CardScript.playerHandScript.currentCards.Count < 5)
         {
             deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
-            int randomIntToDraw = Random.Range(0, deckDataRemaining.Count);
+            int randomIntToDraw = UnityEngine.Random.Range(0, deckDataRemaining.Count);
             CardData drawnCard = deckDataRemaining[randomIntToDraw];
             deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
             deckObjs.Remove(deckObjs[deckObjs.Count - 1]);
@@ -579,7 +514,7 @@ public class Board : MonoBehaviour
         if (CardScript.playerHandScript.currentCards.Count < 5)
         {
             deckObjs[deckObjs.Count - 1].transform.GetChild(0).GetComponent<TableCardScript>().RemoveCard();
-            int randomIntToDraw = Random.Range(0, deckDataRemaining.Count);
+            int randomIntToDraw = UnityEngine.Random.Range(0, deckDataRemaining.Count);
             CardData drawnCard = deckDataRemaining[randomIntToDraw];
             deckDataRemaining.Remove(deckDataRemaining[randomIntToDraw]);
             deckObjs.Remove(deckObjs[deckObjs.Count - 1]);
@@ -625,36 +560,6 @@ public class Board : MonoBehaviour
             units[i].GetComponent<UnitBehavior>().SetHasActed(false);
         }
 
-    }
-    public void Update()
-    {
-        if (timer == -1f)
-        {
-            timer = Time.time;
-        }
-        if (deckDataRemaining.Count == 0 && CardScript.playerHandScript.currentCards != null && timer + 5 < Time.time)
-        {
-            deckDataRemaining = new List<CardData>();
-            foreach (CardData data in deckData)
-            {
-                // bool found = false;
-                // for (int i = 0; i < CardScript.playerHandScript.currentCards.Count; i++)
-                // {
-                //     if (data == CardScript.playerHandScript.currentCards[i])
-                //     {
-                //         found = true;
-                //         break;
-                //     }
-                // }
-                // if (found == false)
-                // {
-                deckDataRemaining.Add(data);
-                // }
-
-            }
-            timer = Time.time;
-            CreateDeck();
-        }
     }
     public void IterateVampAI()
     {
@@ -937,7 +842,7 @@ public class Board : MonoBehaviour
         if (!IsSpaceOccupied((3, 4)))
         {
             vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-            if (Random.Range(0, 1) > 0.5f)
+            if (UnityEngine.Random.Range(0, 1) > 0.5f)
             {
                 vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
             }
@@ -950,7 +855,7 @@ public class Board : MonoBehaviour
         else
         {
             vampireUnits.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-            if (Random.Range(0, 1) > 0.5f)
+            if (UnityEngine.Random.Range(0, 1) > 0.5f)
             {
                 vampireUnits[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[3]);
             }

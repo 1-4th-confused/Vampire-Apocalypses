@@ -53,6 +53,7 @@ public class UnitBehavior : MonoBehaviour
     public Text HealthNumber;
     public Animator unitAnimator;
     public Image UnitImage;
+    public bool isVampire = false;
 
     /// <summary>
     /// Initializes the unit's image and position.
