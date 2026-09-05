@@ -17,8 +17,9 @@ public class Board : MonoBehaviour
     public List<GameObject> units = new List<GameObject>();
 
     [SerializeField]
-    public int score2 = 0;
-
+    public int gameGold = 0;
+    public int currentWave = 1;
+    public int totalWaves = 5;
 
     /// <summary>
     /// List of vampire units on the board.
@@ -98,7 +99,6 @@ public class Board : MonoBehaviour
     public GameObject endPanelObject;
     public GameObject endPanelCanvas;
     private bool createdEndPanel = false;
-    public int score = 0;
     public float timer = -1f;
 
     /// <summary>
@@ -821,7 +821,6 @@ public class Board : MonoBehaviour
         // checks the vampireUnits list for the unit to remove and removes it and spawns a new one
         for (int i = 0; i < vampireUnits.Count; i++)
         {
-            score++;
             if (vampireUnits[i] == unit)
             {
                 Destroy(vampireUnits[i], 0.5f);
@@ -873,7 +872,7 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if (target.GetComponent<UnitBehavior>().damageThisUnit(damage)){
             if (target.GetComponent<UnitBehavior>().isVampire)
-                boardScript.score2 += 1;
+                boardScript.gameGold += 1;
             target.GetComponent<UnitBehavior>().unitAnimator.SetTrigger("death");
         } else {
             target.GetComponent<UnitBehavior>().unitAnimator.SetTrigger("damage");

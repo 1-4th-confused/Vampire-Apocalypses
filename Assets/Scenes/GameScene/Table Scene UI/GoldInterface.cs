@@ -1,15 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class scorer : MonoBehaviour
+public class GoldInterface : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public Text scoreText; 
+    public Text goldText; 
     public Board board;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        scoreText.text = "Score: " + board.score2.ToString();    
+        goldText.text = "Gold: " + board.gameGold.ToString();    
     }
 }
