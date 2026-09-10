@@ -1,0 +1,8 @@
+{
+    "name": "Herculepire",
+    "type": "unit",
+    "magicDamage": 1,
+    "meleeDamage": 8,
+    "rangedDamage": 1,
+    "maxHealth": 15
+}

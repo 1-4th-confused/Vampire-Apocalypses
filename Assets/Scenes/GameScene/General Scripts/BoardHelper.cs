@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem.Interactions;
 
 public class BoardHelper : ScriptableObject
 {
@@ -50,6 +51,38 @@ public class BoardHelper : ScriptableObject
         // if it was moved by the player selected unit should be deselected
         if (!unitToMove.GetComponent<UnitBehavior>().isVampire) {
             DeselectUnit();
+        }
+        CorrectlyOrderUnitsInLayer();
+    }
+    public void CorrectlyOrderUnitsInLayer() {
+        int totalUnits = 0;
+        List<GameObject>[] unitsList = new List<GameObject>[5];
+
+        for(int i = 0; i < 5;i++) {
+            unitsList[4 - i] = new List<GameObject>();
+            foreach (Transform unitTransform in boardScript.unitsParrent.transform) {
+                if (unitTransform.gameObject.GetComponent<UnitBehavior>().position.y == i) {
+                    totalUnits++;
+                    unitsList[4 - i].Add(unitTransform.gameObject);
+                }
+            }
+        }
+
+        for(int i = 0; i < totalUnits; i++) {
+            if (i < unitsList[0].Count) {
+                unitsList[0][i].transform.SetSiblingIndex(i);
+            } else if (i < unitsList[0].Count + unitsList[1].Count) {
+                unitsList[1][i - unitsList[0].Count].transform.SetSiblingIndex(i);
+            } else if (i < unitsList[0].Count + unitsList[1].Count + unitsList[2].Count) {
+                unitsList[2][i - unitsList[0].Count - unitsList[1].Count].transform.SetSiblingIndex(i);
+            } else if (i < unitsList[0].Count + unitsList[1].Count + unitsList[2].Count + unitsList[3].Count) {
+                unitsList[3][i - unitsList[0].Count - unitsList[1].Count - unitsList[2].Count].transform.SetSiblingIndex(i);
+            } else if (i < unitsList[0].Count + unitsList[1].Count + unitsList[2].Count + unitsList[3].Count + unitsList[4].Count) {
+                unitsList[4][i - unitsList[0].Count - unitsList[1].Count - unitsList[2].Count - unitsList[3].Count].transform.SetSiblingIndex(i);
+            } else {
+                Debug.LogError("CorrectlyOrderUnitsInLayer failed because there are an incorrect number of units in the array");
+            }
+
         }
     }
     public void DeselectUnit() {

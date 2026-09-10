@@ -1,0 +1,8 @@
+{
+    "name": "Vlad",
+    "type": "unit",
+    "magicDamage": 10,
+    "meleeDamage": 4,
+    "rangedDamage": 8,
+    "maxHealth": 50
+}

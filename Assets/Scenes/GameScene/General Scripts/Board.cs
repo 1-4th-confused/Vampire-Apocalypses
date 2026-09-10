@@ -47,6 +47,7 @@ public class Board : MonoBehaviour
     public static Board boardScript;
     public static BoardOnClickHelper clickHelperScript;
     public static BoardHelper helper;
+    public static VampAIHelper vampAIHelper;
     /// <summary>
     /// List of deck card game objects.
     /// </summary>
@@ -91,6 +92,7 @@ public class Board : MonoBehaviour
     /// Position of the currently selected unit.
     /// </summary>
     public (int x, int y) selectedUnitPosition = (-1, -1);
+    public (int x, int y)[] quedVampSpawnPositions = new (int x, int y)[0];
 
     public Animator hourglassAnimator;
     public int turnNumber;
@@ -109,30 +111,46 @@ public class Board : MonoBehaviour
         boardScript = this;
         helper = ScriptableObject.CreateInstance(typeof(BoardHelper)) as BoardHelper;
         clickHelperScript = ScriptableObject.CreateInstance(typeof(BoardOnClickHelper)) as BoardOnClickHelper;
-        
+        vampAIHelper = ScriptableObject.CreateInstance(typeof(VampAIHelper)) as VampAIHelper;
+
         CardManager.ReadUnitsJSON();
-        //pidgion : 4
-        //soldier : 7
-        //gladiator : 2
 
-        //majician : 3
-        //vampire : 8
-
-        SpawnEnemy((CardData)CardManager.unitTypes[8],(4, 4));
-        SpawnEnemy((CardData)CardManager.unitTypes[3],(2, 4));
-
-        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        units[0].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[4]);
-        units[0].GetComponent<UnitBehavior>().position = (2, 0);
-        units[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[7]);
-        units[1].GetComponent<UnitBehavior>().position = (3, 0);
+        for (int i = 0; i < CardManager.unitTypes.Count; i++) {
+            if (((CardData)CardManager.unitTypes[i]).name == "PetiteVampwa") {
+                SpawnEnemy((CardData)CardManager.unitTypes[i],(4, 4));
+            }
+            if (((CardData)CardManager.unitTypes[i]).name == "Herculepire") {
+                SpawnEnemy((CardData)CardManager.unitTypes[i],(2, 4));
+            }
+        }
+        
+        
+        
 
         units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
-        units[2].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[2]);
-        units[2].GetComponent<UnitBehavior>().position = (4, 0);
+        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        units.Add(Instantiate(unitPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation, unitsParrent));
+        for (int i = 0; i < CardManager.unitTypes.Count; i++) {
+            if (((CardData)CardManager.unitTypes[i]).name == "Flamma") {
+                units[0].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[i]);
+                units[0].GetComponent<UnitBehavior>().position = (2, 0);
+            }
+            if (((CardData)CardManager.unitTypes[i]).name == "Quixote") {
+                units[1].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[i]);
+                units[1].GetComponent<UnitBehavior>().position = (3, 0);
+            }
+            if (((CardData)CardManager.unitTypes[i]).name == "dog") {
+                units[2].GetComponent<UnitBehavior>().unitData = ((CardData)CardManager.unitTypes[i]);
+                units[2].GetComponent<UnitBehavior>().position = (4, 0);
+            }
+        }
+        
+        
+        
 
         CreateTiles();
+
+        quedVampSpawnPositions = new (int x, int y)[3];
 
         // Initialize deck data
         deckData = new List<CardData>();
@@ -158,6 +176,7 @@ public class Board : MonoBehaviour
         textTurnNumber.text = "" + turnNumber;
 
         UpdatePieceInteractability();
+        helper.CorrectlyOrderUnitsInLayer();
     }
     public void Update()
     {
@@ -209,6 +228,7 @@ public class Board : MonoBehaviour
         vampireUnits.Add(tempUnit);
         tempUnit.GetComponent<UnitBehavior>().unitData = unitType;
         tempUnit.GetComponent<UnitBehavior>().position = pos;
+        helper.CorrectlyOrderUnitsInLayer();
     }
     IEnumerator CreateDeckInSequence()
     {
@@ -273,7 +293,7 @@ public class Board : MonoBehaviour
             if (
                 selectedUnitPosition == units[i].GetComponent<UnitBehavior>().position
                 &&
-                units[i].GetComponent<UnitBehavior>().hasActed)
+                units[i].GetComponent<UnitBehavior>().actionCooldown > 0)
             {
                 selectedUnitPosition = (-1, -1);
                 break;
@@ -300,7 +320,7 @@ public class Board : MonoBehaviour
             clearInteractabilityMatrix();
             for (int i = 0; i < units.Count; i++)
             {
-                if (!units[i].GetComponent<UnitBehavior>().hasActed)
+                if (units[i].GetComponent<UnitBehavior>().actionCooldown <= 0)
                     SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position, true);
             }
         }
@@ -342,7 +362,7 @@ public class Board : MonoBehaviour
             clearInteractabilityMatrix();
             for (int i = 0; i < units.Count; i++)
             {
-                if (units[i].GetComponent<UnitBehavior>().hasActed == false)
+                if (units[i].GetComponent<UnitBehavior>().actionCooldown <= 0)
                     SetPieceInteractable(units[i].GetComponent<UnitBehavior>().position, true);
             }
         }
@@ -434,7 +454,7 @@ public class Board : MonoBehaviour
 
         if (CardScript.playerHandScript.SelectedCard != null && selectedUnitPosition == (-1, -1)) {
             if (selectedCardData.name == "defend") {
-                clickHelperScript.PlayDefend(pos);
+                clickHelperScript.PlayDefend(pos, selectedCardData);
                 return;
             }
         }
@@ -545,25 +565,48 @@ public class Board : MonoBehaviour
     }
     public void BeginTurn()
     {
-        IterateVampAI();
         for (int i = 0; i < vampireUnits.Count; i++)
         {
-            vampireUnits[i].GetComponent<UnitBehavior>().hasActed = false;
+            vampireUnits[i].GetComponent<UnitBehavior>().StepActionCooldown();
         }
+        IterateVampAI();
+        // StartCoroutine(IterateVampAI());
         for (int i = 0; i < units.Count; i++)
         {
-            units[i].GetComponent<UnitBehavior>().SetHasActed(false);
+            units[i].GetComponent<UnitBehavior>().StepActionCooldown();
         }
-
     }
+
+    // IEnumerator IterateVampAI() {
+    //     for (int i = 0; i < vampireUnits.Count; i++) {
+    //         if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed) {
+    //             switch (vampireUnits[i].GetComponent<UnitBehavior>().unitData.name) {
+    //                 case "PetiteVampwa":
+    //                     break;
+    //                 case "DrAgrippa":
+    //                     break;
+    //                 case "dog":
+    //                     break;
+    //                 case "Herculepire":
+    //                     break;
+    //                 case "Vlad":
+    //                     break;
+    //                 case "BaBaYaga":
+    //                     break;
+    //                 default :
+    //                     break;
+    //             }
+    //             yield return new WaitForSeconds(0.25f);
+    //         }
+    //     }
+    //     yield return new WaitForSeconds(0.5f);
+    // }
+// /*
     public void IterateVampAI()
     {
         for (int i = 0; i < vampireUnits.Count; i++)
-            vampireUnits[i].GetComponent<UnitBehavior>().hasActed = false;
-
-        for (int i = 0; i < vampireUnits.Count; i++)
         {
-            if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed && vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length == 0)
+            if (vampireUnits[i].GetComponent<UnitBehavior>().actionCooldown <= 0 && vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length == 0)
             {
                 //looking for units to select
                 for (int j = 0; j < units.Count; j++)
@@ -582,11 +625,11 @@ public class Board : MonoBehaviour
                         };
                         vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions = temp;
                         vampireUnits[i].GetComponent<UnitBehavior>().quedDamage = 5;
-                        vampireUnits[i].GetComponent<UnitBehavior>().SetHasActed(true);
+                        vampireUnits[i].GetComponent<UnitBehavior>().SetActionCooldown(1);
                     }
                 }
             }
-            else if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed)
+            else if (vampireUnits[i].GetComponent<UnitBehavior>().actionCooldown <= 0)
             {
                 for (int j = 0; j < vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions.Length; j++)
                 {
@@ -601,9 +644,9 @@ public class Board : MonoBehaviour
                     }
                 }
                 vampireUnits[i].GetComponent<UnitBehavior>().selectedPositions = new (int x, int y)[0];
-                vampireUnits[i].GetComponent<UnitBehavior>().GetComponent<UnitBehavior>().SetHasActed(true);
+                vampireUnits[i].GetComponent<UnitBehavior>().GetComponent<UnitBehavior>().SetActionCooldown(1);
             }
-            if (!vampireUnits[i].GetComponent<UnitBehavior>().hasActed)
+            if (vampireUnits[i].GetComponent<UnitBehavior>().actionCooldown <= 0)
             {
                 GameObject closestUnit = null;
                 for (int j = 0; j < units.Count; j++)
@@ -669,6 +712,7 @@ public class Board : MonoBehaviour
 
         UpdatePieceInteractability();
     }
+    // */
     public void clearInteractabilityMatrix()
     {
         for (int i = 0; i < spawnedPieces.GetLength(0); i++)
@@ -829,20 +873,37 @@ public class Board : MonoBehaviour
                 return;
             }
         }
+        helper.CorrectlyOrderUnitsInLayer();
     }
     public void RespawnVampire()
     {
         if (!IsSpaceOccupied((3, 4))) {
-            if (UnityEngine.Random.Range(0, 1) > 0.5f) {
-                SpawnEnemy(((CardData)CardManager.unitTypes[3]),(3, 4));
+            if (UnityEngine.Random.Range(0, 2) > 0.5f) {
+                for (int i = 0; i < CardManager.unitTypes.Count; i++) {
+                    if (((CardData)CardManager.unitTypes[i]).name == "PetiteVampwa") {
+                        SpawnEnemy((CardData)CardManager.unitTypes[i],(3, 4));
+                    }
+                }
             } else {
-                SpawnEnemy(((CardData)CardManager.unitTypes[8]),(3, 4));
+                for (int i = 0; i < CardManager.unitTypes.Count; i++) {
+                    if (((CardData)CardManager.unitTypes[i]).name == "Herculepire") {
+                        SpawnEnemy((CardData)CardManager.unitTypes[i],(3, 4));
+                    }
+                }
             }
         } else {
-            if (UnityEngine.Random.Range(0, 1) > 0.5f) {
-                SpawnEnemy(((CardData)CardManager.unitTypes[3]),(4, 4));
+            if (UnityEngine.Random.Range(0, 2) > 0.5f) {
+                for (int i = 0; i < CardManager.unitTypes.Count; i++) {
+                    if (((CardData)CardManager.unitTypes[i]).name == "PetiteVampwa") {
+                        SpawnEnemy((CardData)CardManager.unitTypes[i],(4, 4));
+                    }
+                }
             } else {
-                SpawnEnemy(((CardData)CardManager.unitTypes[8]),(4, 4));
+                for (int i = 0; i < CardManager.unitTypes.Count; i++) {
+                    if (((CardData)CardManager.unitTypes[i]).name == "Herculepire") {
+                        SpawnEnemy((CardData)CardManager.unitTypes[i],(4, 4));
+                    }
+                }
             }
         }
     }

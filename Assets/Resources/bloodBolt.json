@@ -4,5 +4,6 @@
     "name": "bloodBolt",
     "type": "card",
     "range": "ranged",
+    "cooldown": 3,
     "description": "A powerful spell that deals damage to a single target."
 }

@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Reflection;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,7 +47,7 @@ public class UnitBehavior : MonoBehaviour
     public float defense;
     public GameObject defenseBar;
     public GameObject HealthBar;
-    public bool hasActed = false;
+    public int actionCooldown = 0;
     public float quedDamage = 0;
     public (int x, int y)[] selectedPositions = new (int x, int y)[0];
     public Text HealthNumber;
@@ -98,12 +96,10 @@ public class UnitBehavior : MonoBehaviour
         position = pos;
         this.transform.position = new Vector3(0.32f * (position.x - 3), 0.24f, 0.32f * (position.y - 2));
     }
-
     public void updatePosition()
     {
         this.transform.position = new Vector3(0.32f * (position.x - 3), 0.24f, 0.32f * (position.y - 2));
     }
-
     public void movePosition((int x, int y) pos)
     {
         position = pos;
@@ -116,7 +112,6 @@ public class UnitBehavior : MonoBehaviour
     {
         position = (position.x + x, position.y + y);
     }
-
     public bool damageThisUnit(double damage)
     {
 
@@ -141,16 +136,21 @@ public class UnitBehavior : MonoBehaviour
         this.defense += (float)defense;
         DisplayDamage();
     }
-    public void SetHasActed(bool hasActed, double delay = 0)
+    public void SetActionCooldown(int actionCooldown, double delay = 0)
     {
-        this.hasActed = hasActed;
-        if (this.hasActed)
+        this.actionCooldown = actionCooldown;
+        if (this.actionCooldown <= 0)
         {
             StartCoroutine(SetImageGrey(delay));
         } else {
             imageObj.GetComponent<UnityEngine.UI.Image>().sprite = unitData.image;
         }
-        unitAnimator.SetBool("active", !this.hasActed);
+        unitAnimator.SetBool("active", this.actionCooldown <= 0);
+    }
+    public void stepActionCooldown() {
+        if (actionCooldown > 0) {
+            actionCooldown--;
+        }
     }
     private IEnumerator SetImageGrey(double delay = 0) {
         yield return new WaitForSeconds((float)delay);

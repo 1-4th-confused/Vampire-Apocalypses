@@ -4,5 +4,6 @@
     "name": "assassin",
     "type": "card",
     "range": "melee",
+    "cooldown": 1,
     "description": "A swift and deadly assassin with high melee damage."
 }

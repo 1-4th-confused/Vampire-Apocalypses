@@ -3,6 +3,7 @@
     "defense": 8.0,
     "name": "vines",
     "type": "card",
-    "range": "self",
-    "description": "A card that summons vines to defend the unit."
+    "range": "ranged",
+    "cooldown": 1,
+    "description": "A card that summons vines to prevent another unit from acting."
 }

@@ -1,0 +1,8 @@
+{
+    "name": "BaBaYaga",
+    "type": "unit",
+    "magicDamage": 8,
+    "meleeDamage": 1,
+    "rangedDamage": 2,
+    "maxHealth": 7
+}

@@ -3,6 +3,7 @@
     "defense": 5.0,
     "name": "slam",
     "type": "card",
-    "range": "ranged",
+    "range": "melee",
+    "cooldown": 2,
     "description": "A powerful slam attack that deals damage to all adjacent enemies."
 }

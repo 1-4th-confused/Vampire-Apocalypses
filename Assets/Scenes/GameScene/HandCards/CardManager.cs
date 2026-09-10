@@ -17,6 +17,7 @@ public class CardData
     public Sprite image;
     public Sprite greyImage;
     public string name;
+    public int cooldown;
     public double damage;
     public double defense;
     public double magicDamage;

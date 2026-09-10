@@ -7,7 +7,7 @@ public class BoardOnClickHelper : ScriptableObject
 {
     Board boardScript = Board.boardScript;
 
-    public void PlayDefend((int x, int y) pos) {
+    public void PlayDefend((int x, int y) pos, CardData defendCardData) {
         // Iterate backwards to safely remove during iteration
             for (int i = 0; i < boardScript.units.Count; i++)
             {
@@ -18,7 +18,7 @@ public class BoardOnClickHelper : ScriptableObject
                     Board.helper.RemoveCard(CardScript.playerHandScript.SelectedCard);
                     
                     CardScript.playerHandScript.SelectedCard = null;
-                    boardScript.units[i].GetComponent<UnitBehavior>().SetHasActed(true);
+                    boardScript.units[i].GetComponent<UnitBehavior>().SetActionCooldown(defendCardData.cooldown);
                     break;
                 }
             }

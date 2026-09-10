@@ -4,5 +4,6 @@
     "name": "defend",
     "type": "card",
     "range": "self",
+    "cooldown": 2,
     "description": "A defensive card that increases the unit's defense."
 }

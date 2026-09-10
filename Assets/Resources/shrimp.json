@@ -1,8 +1,9 @@
 {
     "damage": 45.0,
-    "defense": 60.0,
+    "defense": 0.0,
     "name": "shrimp",
     "type": "card",
+    "cooldown": 1,
     "range": "ranged",
     "description": "A small but fierce shrimp with high damage, who makes a splash."
 }

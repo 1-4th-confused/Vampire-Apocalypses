@@ -4,5 +4,6 @@
     "name": "archer",
     "type": "card",
     "range": "ranged",
+    "cooldown": 2,
     "description": "A skilled archer with high ranged damage."
 }
